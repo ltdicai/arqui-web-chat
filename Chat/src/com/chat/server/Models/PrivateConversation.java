@@ -16,4 +16,10 @@ public class PrivateConversation extends Conversation {
     public User getUserInvite() {
         return userInvite;
     }
+
+    public void addMessage(Message message){
+        if(message.getUser().equals(userHost) || message.getUser().equals(userInvite)){
+            super.addMessage(message);
+        }
+    }
 }

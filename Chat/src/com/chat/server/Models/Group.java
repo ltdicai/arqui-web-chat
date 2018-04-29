@@ -24,4 +24,14 @@ public class Group extends Conversation{
         this.userHost = userHost;
         this.members = new HashSet<>();
     }
+
+    public void addUser(User member){
+        members.add(member);
+    }
+
+    public void addMessage(Message message){
+        if(message.getUser().equals(userHost) || members.contains(message.getUser())) {
+            super.addMessage(message);
+        }
+    }
 }
