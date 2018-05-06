@@ -56,7 +56,7 @@ public class GlobalConversationView extends Composite implements HasWidgets, Glo
     }
 
     @Override
-    public HasClickHandlers getLoginButton() {
+    public HasClickHandlers getSendTextMessageBotton() {
         //return button to implement its events in the Presenter
         return newMessage;
     }
@@ -67,16 +67,11 @@ public class GlobalConversationView extends Composite implements HasWidgets, Glo
     }
 
     @Override
-    public String getIdUser(){
-        return  message.getText();
-    }
-
-    @Override
-    public String sendMessage(){
-        String auxMessage = message.getText();
-        messageBox.add(new Label(message.getText()));
-        message.setText("");
-        return auxMessage;
+    public String sendTextMessage(){
+        String messageText = message.getText();
+        Label messageLabel = newTextMessageLabel(messageText);
+        messageBox.add(messageLabel);
+        return messageText;
     }
     
     @Override
@@ -84,11 +79,15 @@ public class GlobalConversationView extends Composite implements HasWidgets, Glo
         for (Message item : listMessages) {
             if(item.getClass() == TextMessage.class){
                 TextMessage messageText = (TextMessage)item;
-                messageBox.add(new Label(((TextMessage) item).getMessage()));
+                messageBox.add(newTextMessageLabel(messageText.getMessage()));
             }
-
         }
+    }
 
+    private Label newTextMessageLabel(String messageText){
+        String recuadro = ": " + messageText;
+        Label newTextMessageLabel = new Label();
+        return newTextMessageLabel;
     }
 
 }

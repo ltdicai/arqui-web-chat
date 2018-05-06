@@ -23,12 +23,10 @@ public class LoginPresenter {
     //event bus used to register events
     final HandlerManager eventBus;
     final Display view;
-    AppModel context;
 
-    public LoginPresenter(Display view, HandlerManager eventBus, AppModel context){
+    public LoginPresenter(Display view, HandlerManager eventBus){
         this.eventBus = eventBus;
         this.view = view;
-        this.context = context;
     }
 
 
@@ -36,11 +34,9 @@ public class LoginPresenter {
         view.getLoginButton().addClickHandler(new ClickHandler(){
             @Override
             public void onClick(ClickEvent event) {
-                User user = new User(view.getIdUser());
-                if(!context.users.contains(user)){
-                    context.users.add(user);
-                }
-                Cookies.setCookie("UserID", user.getUserID());
+                String idUser = view.getIdUser();
+
+                Cookies.setCookie("UserID", idUser);
 
                 eventBus.fireEvent(new LoginEvent());
             }
