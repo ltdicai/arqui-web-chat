@@ -21,7 +21,7 @@ public class MenuPresenter {
         Button getLogout();
         Button getButtonGlobalConversation();
         Button getButtonPrivateConversation();
-        Button getButtonGroupsConversation();
+        Button getButtonGroups();
         Widget asWidget();
         MenuView getViewInstance();
         void setLabel(String texto);
@@ -59,7 +59,7 @@ public class MenuPresenter {
                 //eventBus.fireEvent(new NewGlobalConversationEntryEvent(mainpage));
             }
         });
-        display.getButtonGroupsConversation().addClickHandler(new ClickHandler(){
+        display.getButtonGroups().addClickHandler(new ClickHandler(){
             @Override
             public void onClick(ClickEvent event) {
                 // use the event bus to trigger the event

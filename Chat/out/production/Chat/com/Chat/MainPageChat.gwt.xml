@@ -6,6 +6,5 @@
 
     <entry-point class='com.Chat.client.MainPageChat'/>
 
-    <servlet path="/SendGlobalMessage" class="com.Chat.server.SendGlobalMessageImpl"/>
     <servlet path="/AppService" class="com.Chat.server.Services.AppServiceImpl"/>
 </module>

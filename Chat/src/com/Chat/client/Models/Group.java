@@ -2,10 +2,11 @@ package com.Chat.client.Models;
 
 import java.util.*;
 
-public class Group extends Conversation{
+public class Group{
     private String name;
     private User userHost;
     private Set<User> members;
+    private GroupConversation conversation;
 
     public String getName() {
         return name;
@@ -23,6 +24,7 @@ public class Group extends Conversation{
         this.name = name;
         this.userHost = userHost;
         this.members = new HashSet<>();
+        this.conversation = new GroupConversation();
     }
 
     public void addUser(User member){
@@ -31,7 +33,7 @@ public class Group extends Conversation{
 
     public void addMessage(Message message){
         if(message.getUser().equals(userHost) || members.contains(message.getUser())) {
-            super.addMessage(message);
+            conversation.addMessage(message);
         }
     }
 }

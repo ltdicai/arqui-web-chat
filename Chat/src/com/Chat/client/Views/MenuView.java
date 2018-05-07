@@ -18,7 +18,7 @@ public class MenuView implements HasWidgets, MenuPresenter.Display {
     Button logout;
     Button globalConversation;
     Button privateComversation;
-    Button groupsConversation;
+    Button groups;
     Label label;
 
     public MenuView(){
@@ -28,14 +28,14 @@ public class MenuView implements HasWidgets, MenuPresenter.Display {
         logout = new Button("Logout");
         globalConversation = new Button("Chat Global");
         privateComversation = new Button("Chats Privados");
-        groupsConversation = new Button("Chats Grupales");
+        groups= new Button("Chats Grupales");
 
         container.add(label);
         container.add(logout);
         container.add(subConteiner);
         container.add(globalConversation);
         container.add(privateComversation);
-        container.add(groupsConversation);
+        container.add(groups);
 
     }
 
@@ -81,8 +81,8 @@ public class MenuView implements HasWidgets, MenuPresenter.Display {
     }
 
     @Override
-    public Button getButtonGroupsConversation() {
-        return groupsConversation;
+    public Button getButtonGroups() {
+        return groups;
     }
 
     @Override
