@@ -8,8 +8,24 @@
         <servlet-name>com.Chat.MainPageChat AppService</servlet-name>
         <servlet-class>com.Chat.server.Services.AppServiceImpl</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>com.Chat.MainPageChat UserDataService</servlet-name>
+        <servlet-class>com.Chat.server.Services.UserDataServiceImpl</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>com.Chat.MainPageChat GlobalConversationDataService</servlet-name>
+        <servlet-class>com.Chat.server.Services.GlobalConversationDataServiceImpl</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>com.Chat.MainPageChat AppService</servlet-name>
         <url-pattern>/com.Chat.MainPageChat/AppService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>com.Chat.MainPageChat UserDataService</servlet-name>
+        <url-pattern>/com.Chat.MainPageChat/UserDataService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>com.Chat.MainPageChat GlobalConversationDataService</servlet-name>
+        <url-pattern>/com.Chat.MainPageChat/GlobalConversationDataService</url-pattern>
     </servlet-mapping>
 </web-app>

@@ -7,6 +7,8 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.Chat.client.Services.AppService;
 
+import java.sql.CallableStatement;
+
 public class AppServiceImpl extends RemoteServiceServlet implements AppService {
     private AppModel context;
     private AppServiceAsync service;
@@ -14,6 +16,7 @@ public class AppServiceImpl extends RemoteServiceServlet implements AppService {
     @Override
     public void AppStar(){
         this.context = new AppModel();
+
     }
 
 }

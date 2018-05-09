@@ -1,6 +1,8 @@
 package com.Chat.client.Models;
 
-public class GlobalConversation extends Conversation {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public class GlobalConversation extends Conversation implements IsSerializable {
     public GlobalConversation() {
     }
 }

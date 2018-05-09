@@ -30,6 +30,7 @@ public class AppController {
         }
         else{
             loginPage = new LoginPresenter(new LoginView(), eventBus);
+            goTo(RootPanel.get());
         }
 
         bindEvents();
@@ -54,8 +55,9 @@ public class AppController {
         eventBus.addHandler(LogoutEvent.TYPE, new LogoutEventHandler(){
             @Override
             public void onLogout(LogoutEvent event) {
+                System.out.print("Llego al logout");
                 Cookies.removeCookie("UserID");
-                loginPage.go(RootPanel.get());
+                goTo(RootPanel.get());
             }
         });
 

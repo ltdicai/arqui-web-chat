@@ -4,12 +4,15 @@ import com.Chat.client.Events.SendGlobalTextMessageEvent;
 import com.Chat.client.Models.AppModel;
 import com.Chat.client.Models.GlobalConversation;
 import com.Chat.client.Models.Message;
-import com.Chat.client.Models.TextMessage;
+import com.Chat.client.Services.GlobalConversationDataService;
+import com.Chat.client.Services.GlobalConversationDataServiceAsync;
 import com.Chat.client.Views.GlobalConversationView;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -26,6 +29,7 @@ public class GlobalConversationPresenter {
     //event bus used to register events
     final HandlerManager eventBus;
     final GlobalConversationPresenter.Display view;
+    GlobalConversation globalConversation;
 
     public GlobalConversationPresenter(GlobalConversationPresenter.Display view, HandlerManager eventBus){
         this.eventBus = eventBus;
@@ -52,8 +56,22 @@ public class GlobalConversationPresenter {
         return view;
     }
 
-    public void updateMessages(List<Message> messagesList){
-        getView().updateMessages(messagesList);
+
+    public void updateMessage(){
+        AsyncCallback<GlobalConversation> callback = new AsyncCallback<GlobalConversation>() {
+            public void onFailure(Throwable caught) {
+                // TODO: Do something with errors.
+            }
+
+            public void onSuccess(GlobalConversation GC) {
+                globalConversation = GC;
+            }
+        };
+
+        GlobalConversationDataServiceAsync globalConversationDataServiceAsync = GWT.create(GlobalConversationDataService.class);
+
+        globalConversationDataServiceAsync.get(callback);
+        getView().updateMessages(globalConversation.getMessages());
     }
 
 }

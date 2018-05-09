@@ -52,10 +52,9 @@ public class MenuPresenter {
             @Override
             public void onClick(ClickEvent event) {
                 // use the event bus to trigger the event
-                //eventBus.fireEvent(new LogoutEvent());
-
 
                 globalConversationPresenter.go(getView().getSubContainer());
+                globalConversationPresenter.updateMessage();
                 //eventBus.fireEvent(new NewGlobalConversationEntryEvent(mainpage));
             }
         });

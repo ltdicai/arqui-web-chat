@@ -1,8 +1,10 @@
 package com.Chat.client.Models;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.util.Objects;
 
-public class User {
+public class User implements IsSerializable {
     private String userID;
 
     public String getUserID() {
