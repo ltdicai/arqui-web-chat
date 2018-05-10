@@ -1,0 +1,57 @@
+create sequence messages_messageid_seq
+;
+
+create sequence conversations_conversationid_seq
+;
+
+create table users
+(
+	userid varchar(50) not null
+		constraint users_pkey
+			primary key
+)
+;
+
+create table conversations
+(
+	conversationid serial not null
+		constraint conversations_pkey
+			primary key
+)
+;
+
+create table messages
+(
+	messageid serial not null
+		constraint messages_pkey
+			primary key,
+	userid varchar(50)
+		constraint messages_userid_fkey
+			references users,
+	conversationid integer
+		constraint messages_conversationid_fkey
+			references conversations
+)
+;
+
+create table textmessages
+(
+	messageid integer not null
+		constraint textmessages_pkey
+			primary key
+		constraint textmessages_messageid_fkey
+			references messages,
+	message varchar(200) not null
+)
+;
+
+create table globalconversations
+(
+	conversationid integer not null
+		constraint globalconversations_pkey
+			primary key
+		constraint globalconversations_conversationid_fkey
+			references conversations
+)
+;
+
