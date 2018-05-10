@@ -1,0 +1,13 @@
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.8.0//EN"
+        "http://gwtproject.org/doctype/2.8.0/gwt-module.dtd">
+<module>
+
+    <inherits name='com.google.gwt.user.User'/>
+
+    <entry-point class='com.chat.client.MainPageChat'/>
+
+    <servlet path="/AppService" class="com.chat.server.Services.AppServiceImpl"/>
+    <servlet path="/UserDataService" class="com.chat.server.Services.UserDataServiceImpl"/>
+    <servlet path="/TextMessageDataService" class="com.chat.server.Services.TextMessageDataServiceImpl"/>
+    <servlet path="/GlobalConversationDataService" class="com.chat.server.Services.GlobalConversationDataServiceImpl"/>
+</module>
