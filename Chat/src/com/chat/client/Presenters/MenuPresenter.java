@@ -20,64 +20,56 @@ public class MenuPresenter {
         Widget asWidget();
         MenuView getViewInstance();
         void setLabel(String texto);
-        HasWidgets getSubContainer();
+        HasWidgets getSubContainerChat();
     }
 
-    final Display display;
+    final Display view;
     final HandlerManager eventBus;
-    private GlobalConversationPresenter globalConversationPresenter;
 
     public MenuPresenter(Display display, HandlerManager eventBus){
-        this.display = display;
+        this.view = display;
         this.eventBus = eventBus;
-        this.display.setLabel(Cookies.getCookie("UserID"));
-        this.globalConversationPresenter = new GlobalConversationPresenter(new GlobalConversationView(), eventBus);
-
+        this.view.setLabel(Cookies.getCookie("UserID"));
     }
 
-    public void init(){
-        display.getLogout().addClickHandler(new ClickHandler(){
+    public void bindEvents(){
+        view.getLogout().addClickHandler(new ClickHandler(){
             @Override
             public void onClick(ClickEvent event) {
-                // use the event bus to trigger the event
+                Cookies.removeCookie("UserID");
                 eventBus.fireEvent(new LogoutEvent());
             }
         });
-        display.getButtonGlobalConversation().addClickHandler(new ClickHandler(){
+        view.getButtonGlobalConversation().addClickHandler(new ClickHandler(){
             @Override
             public void onClick(ClickEvent event) {
-                // use the event bus to trigger the event
-
-                globalConversationPresenter.go(getView().getSubContainer());
+                GlobalConversationPresenter globalConversationPresenter = new GlobalConversationPresenter(new GlobalConversationView(), eventBus);
+                globalConversationPresenter.go(getView().getSubContainerChat());
                 globalConversationPresenter.updateMessage();
-                //eventBus.fireEvent(new NewGlobalConversationEntryEvent(mainpage));
             }
         });
-        display.getButtonGroups().addClickHandler(new ClickHandler(){
+        view.getButtonGroups().addClickHandler(new ClickHandler(){
             @Override
             public void onClick(ClickEvent event) {
-                // use the event bus to trigger the event
-                //eventBus.fireEvent(new LogoutEvent());
+
             }
         });
-        display.getButtonPrivateConversation().addClickHandler(new ClickHandler(){
+        view.getButtonPrivateConversation().addClickHandler(new ClickHandler(){
             @Override
             public void onClick(ClickEvent event) {
-                // use the event bus to trigger the event
-                //eventBus.fireEvent(new LogoutEvent());
+
             }
         });
     }
 
     public void go(final HasWidgets container){
-        init();
+        bindEvents();
         container.clear();
-        container.add(display.asWidget());
-
+        container.add(view.getViewInstance().asWidget());
     }
 
     public Display getView(){
 
-        return display;
+        return view;
     }
 }

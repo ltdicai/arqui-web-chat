@@ -5,6 +5,7 @@ import com.chat.client.Models.Message;
 import com.chat.client.Models.TextMessage;
 import com.chat.client.Models.User;
 import com.chat.client.errors.UserNotFoundException;
+import com.chat.server.Services.ConnectionManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +14,10 @@ import java.sql.SQLException;
 
 public class GlobalConversationDatabaseProcedures {
     private static Connection connection;
+
+    public GlobalConversationDatabaseProcedures() throws SQLException {
+        connection = ConnectionManager.getConnection();
+    }
 
     public GlobalConversation get() throws SQLException, UserNotFoundException {
         String get = "select * from textmessage where conversationid = 1 order by messageid";

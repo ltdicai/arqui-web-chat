@@ -24,7 +24,7 @@ public class LoginPresenter {
         LoginView getViewInstance();
         String getIdUser();
     }
-    //event bus used to register events
+
     final HandlerManager eventBus;
     final Display view;
 
@@ -33,14 +33,13 @@ public class LoginPresenter {
         this.view = view;
     }
 
-
     public void bindEvents(){
         view.getLoginButton().addClickHandler(new ClickHandler(){
             @Override
             public void onClick(ClickEvent event) {
                 String idUser = view.getIdUser();
                 User user = new User(idUser);
-                System.out.print("Prueba on click");
+
                 UserDataServiceAsync userDataServiceAsync = GWT.create(UserDataService.class);
 
                 AsyncCallback<User> callback = new AsyncCallback<User>() {
@@ -64,6 +63,7 @@ public class LoginPresenter {
                     }
 
                     public void onSuccess(User user) {
+
                         Cookies.setCookie("UserID", idUser);
                     }
                 };

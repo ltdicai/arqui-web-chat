@@ -1,8 +1,9 @@
 package com.chat.client.Presenters;
 
-import com.chat.client.Events.SendGlobalTextMessageEvent;
 import com.chat.client.Models.GlobalConversation;
 import com.chat.client.Models.Message;
+import com.chat.client.Models.TextMessage;
+import com.chat.client.Models.User;
 import com.chat.client.Services.GlobalConversationDataService;
 import com.chat.client.Services.GlobalConversationDataServiceAsync;
 import com.chat.client.Views.GlobalConversationView;
@@ -11,6 +12,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
@@ -25,14 +28,22 @@ public class GlobalConversationPresenter {
         String sendTextMessage();
         void updateMessages(List<Message> listMessage);
     }
-    //event bus used to register events
+
+    Timer timer;
     final HandlerManager eventBus;
     final GlobalConversationPresenter.Display view;
-    GlobalConversation globalConversation;
+    private GlobalConversation globalConversation;
 
     public GlobalConversationPresenter(GlobalConversationPresenter.Display view, HandlerManager eventBus){
         this.eventBus = eventBus;
         this.view = view;
+        //this.timer = new Timer() {
+        //    @Override
+        //    public void run() {
+        //        updateMessage();
+        //    }
+        //};
+        //this.timer.schedule(1000);
     }
 
     public void bindEvents(){
@@ -40,7 +51,23 @@ public class GlobalConversationPresenter {
             @Override
             public void onClick(ClickEvent event) {
                 String messageText = getView().sendTextMessage();
-                eventBus.fireEvent(new SendGlobalTextMessageEvent(messageText));
+                String userid = Cookies.getCookie("UserID");
+                User user = new User(userid);
+
+                TextMessage newMessage = new TextMessage(user, messageText);
+                AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+                    public void onFailure(Throwable caught) {
+                        // TODO: Do something with errors.
+                    }
+
+                    public void onSuccess(Void v) {
+                        updateMessage();
+                    }
+                };
+
+                GlobalConversationDataServiceAsync globalConversationDataServiceAsync = GWT.create(GlobalConversationDataService.class);
+
+                globalConversationDataServiceAsync.addMessage(newMessage, callback);
             }
         });
     }

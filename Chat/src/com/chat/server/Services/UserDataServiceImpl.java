@@ -27,7 +27,7 @@ public class UserDataServiceImpl extends RemoteServiceServlet implements UserDat
             return userDatabaseProcedures.get(userID);
         }
         catch (SQLException ex){
-            System.out.println("Excepcion del user get:" + ex.getMessage());
+            //System.out.println("Excepcion del user get:" + ex.getMessage());
             return null;
         }
     }

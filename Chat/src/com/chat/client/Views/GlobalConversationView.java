@@ -10,10 +10,10 @@ import java.util.Iterator;
 import java.util.List;
 
 public class GlobalConversationView extends Composite implements HasWidgets, GlobalConversationPresenter.Display {
-    HorizontalPanel container;
+    Panel container;
     TextBox message;
     Button newMessage;
-    VerticalPanel messageBox;
+    Panel messageBox;
 
 
     public GlobalConversationView(){
@@ -84,6 +84,7 @@ public class GlobalConversationView extends Composite implements HasWidgets, Glo
     private Label newTextMessageLabel(String messageText){
         String recuadro = ": " + messageText;
         Label newTextMessageLabel = new Label();
+
         return newTextMessageLabel;
     }
 

@@ -14,21 +14,19 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class AppController {
-    HandlerManager eventBus;
-    LoginPresenter loginPage;
+    HandlerManager eventBus;;
     HasWidgets container;
 
     public AppController(HandlerManager manager){
         this.eventBus = manager;
+        bindEvents();
+
         if(Cookies.getCookieNames().contains("UserID")){
             goMenuPage();
         }
         else{
-            loginPage = new LoginPresenter(new LoginView(), eventBus);
-            goTo(RootPanel.get());
+            goLoginPage();
         }
-
-        bindEvents();
     }
 
     private void goMenuPage(){
@@ -37,12 +35,16 @@ public class AppController {
         mainpage.go(RootPanel.get());
     }
 
+    private void goLoginPage(){
+        LoginPresenter mainpage = new LoginPresenter(new LoginView(), eventBus);
+        container = mainpage.getView().getViewInstance();
+        mainpage.go(RootPanel.get());
+    }
+
     public void bindEvents(){
         eventBus.addHandler(LoginEvent.TYPE, new LoginEventHandler(){
             @Override
             public void onLogin(LoginEvent event) {
-                // TODO Auto-generated method stub
-                //if login successful
                 goMenuPage();
             }
         });
@@ -50,30 +52,10 @@ public class AppController {
         eventBus.addHandler(LogoutEvent.TYPE, new LogoutEventHandler(){
             @Override
             public void onLogout(LogoutEvent event) {
-                System.out.print("Llego al logout");
-                Cookies.removeCookie("UserID");
-                goTo(RootPanel.get());
+                goLoginPage();
             }
         });
 
-        eventBus.addHandler(NewGlobalConversationEntryEvent.TYPE, new NewGlobalConversationEntryEventHandler(){
-            @Override
-            public void onNewGlobalConversationEntry(NewGlobalConversationEntryEvent event) {
-
-            }
-        });
-
-        eventBus.addHandler(SendGlobalTextMessageEvent.TYPE, new SendGlobalTextMessageEventHandler(){
-            @Override
-            public void onSendGlobalTextMessage(SendGlobalTextMessageEvent event) {
-                User user = new User(Cookies.getCookie("userID"));
-                Message message = new TextMessage(user, event.getMessageText());
-            }
-        });
-    }
-    public void goTo(HasWidgets page){
-        this.container = page;
-        loginPage.go(page);
     }
 
 }

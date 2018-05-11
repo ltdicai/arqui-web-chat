@@ -12,6 +12,5 @@ public class MainPageChat implements EntryPoint {
     public void onModuleLoad() {
         HandlerManager eventBus = new HandlerManager(null);
         AppController app = new AppController(eventBus);
-        app.goTo(RootPanel.get());
     }
 }

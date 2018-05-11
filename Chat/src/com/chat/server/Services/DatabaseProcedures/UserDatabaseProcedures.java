@@ -10,16 +10,6 @@ public class UserDatabaseProcedures {
     private static Connection connection;
 
     public UserDatabaseProcedures() throws SQLException {
-        /*try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            System.err.println("Where is your PostgreSQL JDBC Driver? "
-                    + "Include in your library path!");
-            e.printStackTrace();
-        }
-        String url = "jdbc:postgresql://localhost:5432/gwtdb";
-        String username = "postgres";
-        String password = "postgres";*/
         connection = ConnectionManager.getConnection();
     }
 

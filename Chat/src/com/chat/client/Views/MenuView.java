@@ -1,36 +1,51 @@
 package com.chat.client.Views;
 
 import com.chat.client.Presenters.MenuPresenter;
+import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 
 import java.util.Iterator;
 
-public class MenuView implements HasWidgets, MenuPresenter.Display {
+public class MenuView extends Composite implements HasWidgets, MenuPresenter.Display {
 
-    VerticalPanel container;
-    HorizontalPanel subConteiner;
+
+    Panel container;
+    Panel subContainerUser;
     Button logout;
+    Panel subConteinerChats;
+    Panel subConteinerButtons;
+
     Button globalConversation;
     Button privateComversation;
     Button groups;
     Label label;
 
+
     public MenuView(){
-        label = new Label();
-        subConteiner = new HorizontalPanel();
         container = new VerticalPanel();
+        subContainerUser = new HorizontalPanel();
+        label = new Label();
         logout = new Button("Logout");
-        globalConversation = new Button("chat Global");
+        subContainerUser.add(label);
+        subContainerUser.add(logout);
+
+        subConteinerButtons = new HorizontalPanel();
+        globalConversation = new Button("Chat Global");
         privateComversation = new Button("Chats Privados");
-        groups= new Button("Chats Grupales");
+        groups = new Button("Chats Grupales");
+        subConteinerButtons.add(globalConversation);
+        subConteinerButtons.add(privateComversation);
+        subConteinerButtons.add(groups);
 
-        container.add(label);
-        container.add(logout);
-        container.add(subConteiner);
-        container.add(globalConversation);
-        container.add(privateComversation);
-        container.add(groups);
+        subConteinerChats = new HorizontalPanel();
+        subConteinerChats.add(globalConversation);
 
+        container.add(subContainerUser);
+        container.add(subConteinerButtons);
+        container.add(subConteinerChats);
     }
 
     @Override
@@ -81,11 +96,7 @@ public class MenuView implements HasWidgets, MenuPresenter.Display {
 
     @Override
     public MenuView getViewInstance(){
-
-        if(this == null)
-            return new MenuView();
-        else
-            return this;
+        return this;
     }
 
     @Override
@@ -94,8 +105,8 @@ public class MenuView implements HasWidgets, MenuPresenter.Display {
     }
 
     @Override
-    public HasWidgets getSubContainer(){
-        return this.subConteiner;
+    public HasWidgets getSubContainerChat(){
+        return this.subConteinerChats;
     }
 
 }

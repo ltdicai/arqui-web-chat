@@ -2,5 +2,6 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
     <g:HTMLPanel>
 
+
     </g:HTMLPanel>
 </ui:UiBinder>
