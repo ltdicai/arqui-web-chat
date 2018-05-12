@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.Stack;
 
 public class GlobalConversationDatabaseProcedures {
     private static Connection connection;
@@ -20,19 +22,14 @@ public class GlobalConversationDatabaseProcedures {
     }
 
     public GlobalConversation get() throws SQLException, UserNotFoundException {
-        String get = "select * from textmessage where conversationid = 1 order by messageid";
-
-        PreparedStatement preparedStatement;
-        preparedStatement = connection.prepareCall(get);
-        preparedStatement.execute();
-        ResultSet resultSet = preparedStatement.getResultSet();
 
         GlobalConversation globalConversation = new GlobalConversation();
-        UserDatabaseProcedures userDatabaseProcedures = new UserDatabaseProcedures();
-        while (resultSet.next()) {
-            User user = userDatabaseProcedures.get(resultSet.getString("userid"));
-            TextMessage textMessage = new TextMessage(user, resultSet.getString("message"));
-            globalConversation.addMessage(textMessage);
+
+        TextMessageDatabaseProcedures textMessageDatabaseProcedures = new TextMessageDatabaseProcedures();
+        Stack<TextMessage> textMessages = textMessageDatabaseProcedures.get(1);
+        Iterator<TextMessage> iterTextMessages = textMessages.iterator();
+        while (iterTextMessages.hasNext()){
+           globalConversation.addMessage(iterTextMessages.next());
         }
 
         return globalConversation;

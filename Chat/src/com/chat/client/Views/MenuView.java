@@ -11,36 +11,37 @@ import java.util.Iterator;
 
 public class MenuView extends Composite implements HasWidgets, MenuPresenter.Display {
 
-
     Panel container;
     Panel subContainerUser;
-    Button logout;
     Panel subConteinerChats;
     Panel subConteinerButtons;
-
+    Button logout;
     Button globalConversation;
     Button privateComversation;
     Button groups;
-    Label label;
-
+    Label userNameLabel;
 
     public MenuView(){
-        container = new VerticalPanel();
+        container = new AbsolutePanel();
+
         subContainerUser = new HorizontalPanel();
-        label = new Label();
+        subConteinerButtons = new HorizontalPanel();
+        subConteinerChats = new HorizontalPanel();
+
+        userNameLabel = new Label();
         logout = new Button("Logout");
-        subContainerUser.add(label);
+
+        subContainerUser.add(userNameLabel);
         subContainerUser.add(logout);
 
-        subConteinerButtons = new HorizontalPanel();
         globalConversation = new Button("Chat Global");
         privateComversation = new Button("Chats Privados");
         groups = new Button("Chats Grupales");
+
         subConteinerButtons.add(globalConversation);
         subConteinerButtons.add(privateComversation);
         subConteinerButtons.add(groups);
 
-        subConteinerChats = new HorizontalPanel();
         subConteinerChats.add(globalConversation);
 
         container.add(subContainerUser);
@@ -101,7 +102,7 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
 
     @Override
     public void setLabel(String text){
-        label.setText(text);
+        userNameLabel.setText(text);
     }
 
     @Override

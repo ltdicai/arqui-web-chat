@@ -45,7 +45,6 @@ public class MenuPresenter {
             public void onClick(ClickEvent event) {
                 GlobalConversationPresenter globalConversationPresenter = new GlobalConversationPresenter(new GlobalConversationView(), eventBus);
                 globalConversationPresenter.go(getView().getSubContainerChat());
-                globalConversationPresenter.updateMessage();
             }
         });
         view.getButtonGroups().addClickHandler(new ClickHandler(){
@@ -69,7 +68,6 @@ public class MenuPresenter {
     }
 
     public Display getView(){
-
         return view;
     }
 }

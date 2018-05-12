@@ -32,6 +32,7 @@ public class GlobalConversationDataServiceImpl extends RemoteServiceServlet impl
             globalConversationDatabaseProcedures.addMessage(message);
         }
         catch (SQLException ex){
+
         }
     }
 

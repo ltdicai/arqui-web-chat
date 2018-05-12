@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.List;
+import java.util.Stack;
 
 public class GlobalConversationPresenter {
     public interface Display{
@@ -26,24 +27,24 @@ public class GlobalConversationPresenter {
         Widget asWidget();
         GlobalConversationView getViewInstance();
         String sendTextMessage();
-        void updateMessages(List<Message> listMessage);
+        void updateMessages(Stack<Message> listMessage);
+        void clearText();
     }
 
-    Timer timer;
+    private Timer timer;
     final HandlerManager eventBus;
     final GlobalConversationPresenter.Display view;
-    private GlobalConversation globalConversation;
 
     public GlobalConversationPresenter(GlobalConversationPresenter.Display view, HandlerManager eventBus){
         this.eventBus = eventBus;
         this.view = view;
-        //this.timer = new Timer() {
-        //    @Override
-        //    public void run() {
-        //        updateMessage();
-        //    }
-        //};
-        //this.timer.schedule(1000);
+        this.timer = new Timer() {
+            @Override
+            public void run() {
+                updateMessage();
+            }
+        };
+        this.timer.scheduleRepeating(2000);
     }
 
     public void bindEvents(){
@@ -51,10 +52,11 @@ public class GlobalConversationPresenter {
             @Override
             public void onClick(ClickEvent event) {
                 String messageText = getView().sendTextMessage();
+                getView().clearText();
                 String userid = Cookies.getCookie("UserID");
                 User user = new User(userid);
-
                 TextMessage newMessage = new TextMessage(user, messageText);
+
                 AsyncCallback<Void> callback = new AsyncCallback<Void>() {
                     public void onFailure(Throwable caught) {
                         // TODO: Do something with errors.
@@ -89,15 +91,15 @@ public class GlobalConversationPresenter {
                 // TODO: Do something with errors.
             }
 
-            public void onSuccess(GlobalConversation GC) {
-                globalConversation = GC;
+            public void onSuccess(GlobalConversation globalConversation) {
+                getView().updateMessages(globalConversation.getMessages());
             }
         };
 
         GlobalConversationDataServiceAsync globalConversationDataServiceAsync = GWT.create(GlobalConversationDataService.class);
 
         globalConversationDataServiceAsync.get(callback);
-        getView().updateMessages(globalConversation.getMessages());
+
     }
 
 }

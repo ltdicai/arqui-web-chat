@@ -1,30 +1,33 @@
 package com.chat.server.Services.DatabaseProcedures;
 
 import com.chat.client.Models.Message;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import com.chat.server.Services.ConnectionManager;
+
+import java.sql.*;
 
 public class MessageDataProcedures {
     private static Connection connection;
 
-    void insert(Message message, int conversationid) throws SQLException {
+    public MessageDataProcedures() throws SQLException {
+        connection = ConnectionManager.getConnection();
+    }
 
-        String insert = "INSERT INTO messages"
+
+    int insert(Message message, int conversationid) throws SQLException {
+
+        String insert = "INSERT INTO gwtdbschema.messages"
                 + "(userid, conversationid) VALUES"
-                + "(?, ?)";
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("");
-        sb.append(conversationid);
-
-        String conversationidString =  sb.toString();
+                + "(?, ?);";
 
         PreparedStatement preparedStatement;
-        preparedStatement = connection.prepareCall(insert);
+        preparedStatement = connection.prepareStatement(insert, PreparedStatement.RETURN_GENERATED_KEYS);
         preparedStatement.setString(1, message.getUser().getUserID());
-        preparedStatement.setString(2,  conversationidString);
-        preparedStatement.execute();
-
+        preparedStatement.setInt(2,  conversationid);
+        preparedStatement.executeUpdate();
+        ResultSet rs = preparedStatement.getGeneratedKeys();
+        if(rs.next()){
+            return rs.getInt("messageid");
+        }
+        return preparedStatement.getGeneratedKeys().getInt("messageid");
     }
 }
