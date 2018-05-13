@@ -1,34 +1,32 @@
 package com.chat.client.Presenters;
 
-import com.chat.client.Models.GlobalConversation;
-import com.chat.client.Models.Message;
-import com.chat.client.Models.TextMessage;
-import com.chat.client.Models.User;
+import com.chat.client.Models.*;
 import com.chat.client.Services.GlobalConversationDataService;
 import com.chat.client.Services.GlobalConversationDataServiceAsync;
 import com.chat.client.Views.GlobalConversationView;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HasHandlers;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 
-import java.util.List;
 import java.util.Stack;
 
 public class GlobalConversationPresenter {
     public interface Display{
         HasClickHandlers getSendTextMessageBotton();
+        HasClickHandlers getSendImageMessageBotton();
+        HasClickHandlers getSendAudioMessageBotton();
         Widget asWidget();
         GlobalConversationView getViewInstance();
         String sendTextMessage();
         void updateMessages(Stack<Message> listMessage);
         void clearText();
+        void setVisibleFileUploadPanel(boolean visibility);
+        FormPanel getFileUploadPanel();
     }
 
     private Timer timer;
@@ -56,6 +54,45 @@ public class GlobalConversationPresenter {
                 String userid = Cookies.getCookie("UserID");
                 User user = new User(userid);
                 TextMessage newMessage = new TextMessage(user, messageText);
+
+                AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+                    public void onFailure(Throwable caught) {
+                        // TODO: Do something with errors.
+                    }
+
+                    public void onSuccess(Void v) {
+                        updateMessage();
+                    }
+                };
+
+                GlobalConversationDataServiceAsync globalConversationDataServiceAsync = GWT.create(GlobalConversationDataService.class);
+
+                globalConversationDataServiceAsync.addMessage(newMessage, callback);
+            }
+        });
+        view.getSendImageMessageBotton().addClickHandler(new ClickHandler(){
+            @Override
+            public void onClick(ClickEvent event) {
+                getView().setVisibleFileUploadPanel(true);
+            }
+
+        });
+        view.getFileUploadPanel().addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
+            @Override
+            public void onSubmitComplete(FormPanel.SubmitCompleteEvent event) {
+                updateMessage();
+            }
+        });
+
+
+        view.getSendAudioMessageBotton().addClickHandler(new ClickHandler(){
+            @Override
+            public void onClick(ClickEvent event) {
+                String messageText = getView().sendTextMessage();
+                getView().clearText();
+                String userid = Cookies.getCookie("UserID");
+                User user = new User(userid);
+                AudioMessage newMessage = new AudioMessage(user, messageText);
 
                 AsyncCallback<Void> callback = new AsyncCallback<Void>() {
                     public void onFailure(Throwable caught) {

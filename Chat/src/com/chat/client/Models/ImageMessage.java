@@ -1,18 +1,16 @@
 package com.chat.client.Models;
 
-import java.awt.*;
-
 public class ImageMessage extends Message {
-    private Image image;
+    private String image;
 
     public ImageMessage(){}
 
-    public ImageMessage(User user, Image image) {
+    public ImageMessage(User user, String image) {
         super(user);
         this.image = image;
     }
 
-    public Image getImage() {
+    public String getImage() {
         return image;
     }
 }

@@ -1,6 +1,6 @@
 package com.chat.server.Services.DatabaseProcedures;
 
-import com.chat.client.Models.GlobalConversation;
+import com.chat.client.Models.AudioMessage;
 import com.chat.client.Models.TextMessage;
 import com.chat.client.Models.User;
 import com.chat.client.errors.UserNotFoundException;
@@ -10,20 +10,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
-public class TextMessageDatabaseProcedures {
+public class AudioMessageDatabaseProcedures {
     private static Connection connection;
 
-    public TextMessageDatabaseProcedures() throws SQLException {
+    public AudioMessageDatabaseProcedures() throws SQLException {
         connection = ConnectionManager.getConnection();
     }
 
-    void insert(TextMessage message, int conversationid) throws SQLException {
+    void insert(AudioMessage message, int conversationid) throws SQLException {
 
-            String insert = "INSERT INTO gwtdbschema.textmessages"
+            String insert = "INSERT INTO gwtdbschema.audiomessages"
                     + "(messageid, message) VALUES"
                     + "(?, ?)";
 
@@ -33,13 +31,13 @@ public class TextMessageDatabaseProcedures {
             PreparedStatement preparedStatement;
             preparedStatement = connection.prepareCall(insert);
             preparedStatement.setInt(1, messageid);
-            preparedStatement.setString(2, message.getMessage());
+            preparedStatement.setString(2, message.getAudio());
             preparedStatement.execute();
 
     }
 
-    public Stack<TextMessage> get(int conversationid) throws SQLException, UserNotFoundException {
-        String get = "select tm.*, m.userid, m.conversationid from gwtdbschema.textmessages tm, gwtdbschema.messages m where m.conversationid = ? and tm.messageid = m.messageid order by messageid";
+    public Stack<AudioMessage> get(int conversationid) throws SQLException, UserNotFoundException {
+        String get = "select tm.*, m.userid, m.conversationid from gwtdbschema.audiomessages tm, gwtdbschema.messages m where m.conversationid = ? and tm.messageid = m.messageid order by messageid";
 
         PreparedStatement preparedStatement;
         preparedStatement = connection.prepareCall(get);
@@ -47,13 +45,13 @@ public class TextMessageDatabaseProcedures {
         preparedStatement.execute();
         ResultSet resultSet = preparedStatement.getResultSet();
 
-        Stack<TextMessage> messagesList = new Stack<TextMessage>();
+        Stack<AudioMessage> messagesList = new Stack<AudioMessage>();
 
         UserDatabaseProcedures userDatabaseProcedures = new UserDatabaseProcedures();
         while (resultSet.next()) {
             User user = userDatabaseProcedures.get(resultSet.getString("userid"));
-            TextMessage textMessage = new TextMessage(user, resultSet.getString("message"));
-            messagesList.add(textMessage);
+            AudioMessage audioMessage = new AudioMessage(user, resultSet.getString("message"));
+            messagesList.add(audioMessage);
         }
 
         return messagesList;

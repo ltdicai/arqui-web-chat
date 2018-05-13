@@ -5,27 +5,35 @@
          version="4.0">
 
     <servlet>
-        <servlet-name>com.Chat.MainPageChat AppService</servlet-name>
-        <servlet-class>com.Chat.server.Services.AppServiceImpl</servlet-class>
+        <servlet-name>com.chat.MainPageChat AppService</servlet-name>
+        <servlet-class>com.chat.server.Services.AppServiceImpl</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>com.Chat.MainPageChat UserDataService</servlet-name>
-        <servlet-class>com.Chat.server.Services.UserDataServiceImpl</servlet-class>
+        <servlet-name>com.chat.MainPageChat UserDataService</servlet-name>
+        <servlet-class>com.chat.server.Services.UserDataServiceImpl</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>com.Chat.MainPageChat GlobalConversationDataService</servlet-name>
-        <servlet-class>com.Chat.server.Services.GlobalConversationDataServiceImpl</servlet-class>
+        <servlet-name>com.chat.MainPageChat GlobalConversationDataService</servlet-name>
+        <servlet-class>com.chat.server.Services.GlobalConversationDataServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>com.Chat.MainPageChat AppService</servlet-name>
-        <url-pattern>/com.Chat.MainPageChat/AppService</url-pattern>
+        <servlet-name>com.chat.MainPageChat AppService</servlet-name>
+        <url-pattern>/com.chat.MainPageChat/AppService</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>com.Chat.MainPageChat UserDataService</servlet-name>
-        <url-pattern>/com.Chat.MainPageChat/UserDataService</url-pattern>
+        <servlet-name>com.chat.MainPageChat UserDataService</servlet-name>
+        <url-pattern>/com.chat.MainPageChat/UserDataService</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>com.Chat.MainPageChat GlobalConversationDataService</servlet-name>
-        <url-pattern>/com.Chat.MainPageChat/GlobalConversationDataService</url-pattern>
+        <servlet-name>com.chat.MainPageChat GlobalConversationDataService</servlet-name>
+        <url-pattern>/com.chat.MainPageChat/GlobalConversationDataService</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>fileUploaderServlet</servlet-name>
+        <servlet-class>com.chat.server.Services.FileUpload</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>fileUploaderServlet</servlet-name>
+        <url-pattern>/com.chat.MainPageChat/fileupload</url-pattern>
     </servlet-mapping>
 </web-app>

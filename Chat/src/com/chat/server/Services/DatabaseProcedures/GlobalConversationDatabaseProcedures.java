@@ -1,11 +1,9 @@
 package com.chat.server.Services.DatabaseProcedures;
 
-import com.chat.client.Models.GlobalConversation;
-import com.chat.client.Models.Message;
-import com.chat.client.Models.TextMessage;
-import com.chat.client.Models.User;
+import com.chat.client.Models.*;
 import com.chat.client.errors.UserNotFoundException;
 import com.chat.server.Services.ConnectionManager;
+import com.google.gwt.validation.client.impl.metadata.MessageAndPath;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,9 +23,9 @@ public class GlobalConversationDatabaseProcedures {
 
         GlobalConversation globalConversation = new GlobalConversation();
 
-        TextMessageDatabaseProcedures textMessageDatabaseProcedures = new TextMessageDatabaseProcedures();
-        Stack<TextMessage> textMessages = textMessageDatabaseProcedures.get(1);
-        Iterator<TextMessage> iterTextMessages = textMessages.iterator();
+        MessageDataBaseProcedures textMessageDatabaseProcedures = new MessageDataBaseProcedures();
+        Stack<Message> textMessages = textMessageDatabaseProcedures.get(1);
+        Iterator<Message> iterTextMessages = textMessages.iterator();
         while (iterTextMessages.hasNext()){
            globalConversation.addMessage(iterTextMessages.next());
         }
@@ -37,7 +35,17 @@ public class GlobalConversationDatabaseProcedures {
     }
 
     public void addMessage(Message message) throws SQLException {
-        TextMessageDatabaseProcedures textMessageDatabaseProcedures = new TextMessageDatabaseProcedures();
-        textMessageDatabaseProcedures.insert((TextMessage) message, 1);
+        if(message.getClass() == TextMessage.class){
+            TextMessageDatabaseProcedures textMessageDatabaseProcedures = new TextMessageDatabaseProcedures();
+            textMessageDatabaseProcedures.insert((TextMessage) message, 1);
+        }
+        else if(message.getClass() == ImageMessage.class){
+            ImageMessageDatabaseProcedures imageMessageDatabaseProcedures = new ImageMessageDatabaseProcedures();
+            imageMessageDatabaseProcedures.insert((ImageMessage) message, 1);
+        }
+        else if(message.getClass() == AudioMessage.class){
+            AudioMessageDatabaseProcedures audioMessageDatabaseProcedures = new AudioMessageDatabaseProcedures();
+            audioMessageDatabaseProcedures.insert((AudioMessage) message, 1);
+        }
     }
 }

@@ -1,18 +1,16 @@
 package com.chat.client.Models;
 
-import com.google.gwt.media.client.Audio;
-
 public class AudioMessage extends Message {
-    private Audio audio;
+    private String audio;
 
     public AudioMessage(){}
 
-    public AudioMessage(User user, Audio audio) {
+    public AudioMessage(User user, String audio) {
         super(user);
         this.audio = audio;
     }
 
-    public Audio getAudio() {
+    public String getAudio() {
         return audio;
     }
 }
