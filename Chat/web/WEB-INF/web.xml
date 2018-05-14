@@ -36,4 +36,9 @@
         <servlet-name>fileUploaderServlet</servlet-name>
         <url-pattern>/com.chat.MainPageChat/fileupload</url-pattern>
     </servlet-mapping>
+    <context-param>
+        <description>Location to store uploaded file</description>
+        <param-name>file-path</param-name>
+        <param-value>/home/federico/Arquitectura Web/arqui-web-chat/Chat/web</param-value>
+    </context-param>
 </web-app>
