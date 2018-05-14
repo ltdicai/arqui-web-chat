@@ -16,6 +16,14 @@
         <servlet-name>com.chat.MainPageChat GlobalConversationDataService</servlet-name>
         <servlet-class>com.chat.server.Services.GlobalConversationDataServiceImpl</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>com.chat.MainPageChat ConversationService</servlet-name>
+        <servlet-class>com.chat.server.Services.ConversationServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>com.chat.MainPageChat ConversationService</servlet-name>
+        <url-pattern>/com.chat.MainPageChat/ConversationService</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>com.chat.MainPageChat AppService</servlet-name>
         <url-pattern>/com.chat.MainPageChat/AppService</url-pattern>

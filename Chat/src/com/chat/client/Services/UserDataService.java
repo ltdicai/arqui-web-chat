@@ -6,6 +6,8 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.core.client.GWT;
 
+import java.util.List;
+
 @RemoteServiceRelativePath("UserDataService")
 public interface UserDataService extends RemoteService {
     /**
@@ -23,4 +25,6 @@ public interface UserDataService extends RemoteService {
     void insert(User user);
 
     User get(String userID) throws UserNotFoundException;
+
+    List<User> getAllUsers();
 }

@@ -5,6 +5,9 @@ import com.chat.client.errors.UserNotFoundException;
 import com.chat.server.Services.ConnectionManager;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class UserDatabaseProcedures {
     private static Connection connection;
@@ -42,5 +45,17 @@ public class UserDatabaseProcedures {
 
         return users;
 
+    }
+
+    public List<User> getAll() throws Exception {
+        String query = "SELECT * FROM gwtdbschema.users";
+        PreparedStatement preparedStatement = connection.prepareCall(query);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        List<User> results = new ArrayList<>();
+        while(resultSet.next()) {
+            User user = new User(resultSet.getString("userId"));
+            results.add(user);
+        }
+        return results;
     }
 }

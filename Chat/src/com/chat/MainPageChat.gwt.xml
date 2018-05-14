@@ -10,4 +10,5 @@
     <servlet path="/UserDataService" class="com.chat.server.Services.UserDataServiceImpl"/>
     <servlet path="/TextMessageDataService" class="com.chat.server.Services.TextMessageDataServiceImpl"/>
     <servlet path="/GlobalConversationDataService" class="com.chat.server.Services.GlobalConversationDataServiceImpl"/>
+    <servlet path="/ConversationService" class="com.chat.server.Services.ConversationServiceImpl"/>
 </module>

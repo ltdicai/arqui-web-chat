@@ -10,12 +10,10 @@
       <Visible>1</Visible>
     </database>
     <database id="3" parent="1" name="postgres">
-      <ObjectId>12453</ObjectId>
+      <ObjectId>12413</ObjectId>
+      <Comment>default administrative connection database</Comment>
     </database>
-    <database id="4" parent="1" name="ArquitecturaWebGWT">
-      <ObjectId>16385</ObjectId>
-    </database>
-    <role id="5" parent="1" name="federico">
+    <role id="4" parent="1" name="arqui">
       <ObjectId>16384</ObjectId>
       <SuperRole>1</SuperRole>
       <Inherit>1</Inherit>
@@ -24,7 +22,7 @@
       <CanLogin>1</CanLogin>
       <ConnectionLimit>-1</ConnectionLimit>
     </role>
-    <role id="6" parent="1" name="postgres">
+    <role id="5" parent="1" name="postgres">
       <ObjectId>10</ObjectId>
       <SuperRole>1</SuperRole>
       <Inherit>1</Inherit>
@@ -35,208 +33,107 @@
       <ConnectionLimit>-1</ConnectionLimit>
       <BypassRls>1</BypassRls>
     </role>
-    <schema id="7" parent="2" name="public">
-      <ObjectId>2200</ObjectId>
-      <Current>1</Current>
+    <role id="6" parent="1" name="tester">
+      <ObjectId>16385</ObjectId>
+      <Inherit>1</Inherit>
+      <CanLogin>1</CanLogin>
+      <ConnectionLimit>-1</ConnectionLimit>
+    </role>
+    <schema id="7" parent="2" name="gwtdbschema">
+      <ObjectId>16394</ObjectId>
+      <IntrospectionTimestamp>2018-05-14.01:46:06.483</IntrospectionTimestamp>
+      <IntrospectionStateNumber>686</IntrospectionStateNumber>
+      <Visible>1</Visible>
     </schema>
-    <schema id="8" parent="2" name="pg_catalog">
+    <schema id="8" parent="2" name="information_schema">
+      <ObjectId>12121</ObjectId>
+    </schema>
+    <schema id="9" parent="2" name="pg_catalog">
       <ObjectId>11</ObjectId>
-    </schema>
-    <schema id="9" parent="2" name="pg_toast">
-      <ObjectId>99</ObjectId>
+      <Comment>system catalog schema</Comment>
     </schema>
     <schema id="10" parent="2" name="pg_temp_1">
       <ObjectId>11816</ObjectId>
     </schema>
-    <schema id="11" parent="2" name="pg_toast_temp_1">
+    <schema id="11" parent="2" name="pg_toast">
+      <ObjectId>99</ObjectId>
+      <Comment>reserved schema for TOAST tables</Comment>
+    </schema>
+    <schema id="12" parent="2" name="pg_toast_temp_1">
       <ObjectId>11817</ObjectId>
     </schema>
-    <schema id="12" parent="2" name="information_schema">
-      <ObjectId>12161</ObjectId>
+    <schema id="13" parent="2" name="public">
+      <ObjectId>2200</ObjectId>
+      <Comment>standard public schema</Comment>
+      <Current>1</Current>
     </schema>
-    <schema id="13" parent="2" name="gwtdbschema">
-      <ObjectId>16388</ObjectId>
-      <IntrospectionTimestamp>2018-05-08.13:24:34.939</IntrospectionTimestamp>
-      <IntrospectionStateNumber>728</IntrospectionStateNumber>
-      <Visible>1</Visible>
-    </schema>
-    <sequence id="14" parent="13" name="conversations_conversationid_seq">
+    <sequence id="14" parent="7" name="privateconversations_privateconversationid_seq">
+      <ObjectId>16451</ObjectId>
+      <StateNumber>684</StateNumber>
+      <SequenceIdentity>1</SequenceIdentity>
+      <CacheSize>1</CacheSize>
+    </sequence>
+    <table id="15" parent="7" name="privateconversations">
       <ObjectId>16453</ObjectId>
-      <StateNumber>727</StateNumber>
-      <SequenceIdentity>1</SequenceIdentity>
-      <CacheSize>1</CacheSize>
-    </sequence>
-    <sequence id="15" parent="13" name="messages_messageid_seq">
-      <ObjectId>16450</ObjectId>
-      <StateNumber>724</StateNumber>
-      <SequenceIdentity>1</SequenceIdentity>
-      <CacheSize>1</CacheSize>
-    </sequence>
-    <table id="16" parent="13" name="conversations">
-      <ObjectId>16430</ObjectId>
-      <StateNumber>721</StateNumber>
+      <StateNumber>686</StateNumber>
     </table>
-    <table id="17" parent="13" name="globalconversations">
-      <ObjectId>16440</ObjectId>
-      <StateNumber>721</StateNumber>
+    <table id="16" parent="7" name="users">
+      <ObjectId>16395</ObjectId>
+      <StateNumber>668</StateNumber>
     </table>
-    <table id="18" parent="13" name="messages">
-      <ObjectId>16410</ObjectId>
-      <StateNumber>720</StateNumber>
-    </table>
-    <table id="19" parent="13" name="textmessages">
-      <ObjectId>16420</ObjectId>
-      <StateNumber>722</StateNumber>
-    </table>
-    <table id="20" parent="13" name="users">
-      <ObjectId>16405</ObjectId>
-      <StateNumber>717</StateNumber>
-    </table>
-    <column id="21" parent="16" name="conversationid">
+    <column id="17" parent="15" name="privateconversationid">
       <Position>1</Position>
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>728</StateNumber>
-      <DefaultExpression>nextval(&apos;gwtdbschema.conversations_conversationid_seq&apos;::regclass)</DefaultExpression>
+      <StateNumber>684</StateNumber>
+      <DefaultExpression>nextval(&apos;gwtdbschema.privateconversations_privateconversationid_seq&apos;::regclass)</DefaultExpression>
       <TypeId>23</TypeId>
-      <SequenceName>gwtdbschema.conversations_conversationid_seq</SequenceName>
+      <SequenceName>gwtdbschema.privateconversations_privateconversationid_seq</SequenceName>
     </column>
-    <index id="22" parent="16" name="conversations_pkey">
-      <ObjectId>16433</ObjectId>
-      <ColNames>conversationid</ColNames>
-      <Unique>1</Unique>
-    </index>
-    <key id="23" parent="16" name="conversations_pkey">
-      <ObjectId>16434</ObjectId>
-      <ColNames>conversationid</ColNames>
-      <UnderlyingIndexName>conversations_pkey</UnderlyingIndexName>
-      <Primary>1</Primary>
-    </key>
-    <column id="24" parent="17" name="conversationid">
-      <Position>1</Position>
-      <DataType>integer|0s</DataType>
-      <NotNull>1</NotNull>
-      <StateNumber>721</StateNumber>
-      <TypeId>23</TypeId>
-    </column>
-    <index id="25" parent="17" name="globalconversations_pkey">
-      <ObjectId>16443</ObjectId>
-      <ColNames>conversationid</ColNames>
-      <Unique>1</Unique>
-    </index>
-    <key id="26" parent="17" name="globalconversations_pkey">
-      <ObjectId>16444</ObjectId>
-      <ColNames>conversationid</ColNames>
-      <UnderlyingIndexName>globalconversations_pkey</UnderlyingIndexName>
-      <Primary>1</Primary>
-    </key>
-    <foreign-key id="27" parent="17" name="globalconversations_conversationid_fkey">
-      <ObjectId>16445</ObjectId>
-      <ColNames>conversationid</ColNames>
-      <RefTableId>16430</RefTableId>
-      <RefColPositions>1</RefColPositions>
-      <RefTableName>conversations</RefTableName>
-      <RefKeyName>conversations_pkey</RefKeyName>
-      <RefColNames>conversationid</RefColNames>
-    </foreign-key>
-    <column id="28" parent="18" name="messageid">
-      <Position>1</Position>
-      <DataType>integer|0s</DataType>
-      <NotNull>1</NotNull>
-      <StateNumber>725</StateNumber>
-      <DefaultExpression>nextval(&apos;gwtdbschema.messages_messageid_seq&apos;::regclass)</DefaultExpression>
-      <TypeId>23</TypeId>
-      <SequenceName>gwtdbschema.messages_messageid_seq</SequenceName>
-    </column>
-    <column id="29" parent="18" name="userid">
+    <column id="18" parent="15" name="hostuserid">
       <Position>2</Position>
       <DataType>varchar(50)|0s</DataType>
-      <StateNumber>717</StateNumber>
+      <NotNull>1</NotNull>
+      <StateNumber>685</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="30" parent="18" name="conversationid">
+    <column id="19" parent="15" name="inviteuserid">
       <Position>3</Position>
-      <DataType>integer|0s</DataType>
-      <StateNumber>720</StateNumber>
-      <TypeId>23</TypeId>
-    </column>
-    <index id="31" parent="18" name="messages_pkey">
-      <ObjectId>16413</ObjectId>
-      <ColNames>messageid</ColNames>
-      <Unique>1</Unique>
-    </index>
-    <key id="32" parent="18" name="messages_pkey">
-      <ObjectId>16414</ObjectId>
-      <ColNames>messageid</ColNames>
-      <UnderlyingIndexName>messages_pkey</UnderlyingIndexName>
-      <Primary>1</Primary>
-    </key>
-    <foreign-key id="33" parent="18" name="messages_userid_fkey">
-      <ObjectId>16415</ObjectId>
-      <ColNames>userid</ColNames>
-      <RefTableId>16405</RefTableId>
-      <RefColPositions>1</RefColPositions>
-      <RefTableName>users</RefTableName>
-      <RefKeyName>users_pkey</RefKeyName>
-      <RefColNames>userid</RefColNames>
-    </foreign-key>
-    <foreign-key id="34" parent="18" name="messages_conversationid_fkey">
-      <ObjectId>16435</ObjectId>
-      <ColNames>conversationid</ColNames>
-      <RefTableId>16430</RefTableId>
-      <RefColPositions>1</RefColPositions>
-      <RefTableName>conversations</RefTableName>
-      <RefKeyName>conversations_pkey</RefKeyName>
-      <RefColNames>conversationid</RefColNames>
-    </foreign-key>
-    <column id="35" parent="19" name="messageid">
-      <Position>1</Position>
-      <DataType>integer|0s</DataType>
+      <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>718</StateNumber>
-      <TypeId>23</TypeId>
-    </column>
-    <column id="36" parent="19" name="message">
-      <Position>3</Position>
-      <DataType>varchar(200)|0s</DataType>
-      <NotNull>1</NotNull>
-      <StateNumber>722</StateNumber>
+      <StateNumber>686</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <index id="37" parent="19" name="textmessages_pkey">
-      <ObjectId>16423</ObjectId>
-      <ColNames>messageid</ColNames>
+    <index id="20" parent="15" name="privateconversations_pkey">
+      <ObjectId>16457</ObjectId>
+      <ColNames>privateconversationid</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="38" parent="19" name="textmessages_pkey">
-      <ObjectId>16424</ObjectId>
-      <ColNames>messageid</ColNames>
-      <UnderlyingIndexName>textmessages_pkey</UnderlyingIndexName>
+    <key id="21" parent="15" name="privateconversations_pkey">
+      <ObjectId>16458</ObjectId>
+      <ColNames>privateconversationid</ColNames>
+      <UnderlyingIndexName>privateconversations_pkey</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="39" parent="19" name="textmessages_messageid_fkey">
-      <ObjectId>16425</ObjectId>
-      <ColNames>messageid</ColNames>
-      <RefTableId>16410</RefTableId>
-      <RefColPositions>1</RefColPositions>
-      <RefTableName>messages</RefTableName>
-      <RefKeyName>messages_pkey</RefKeyName>
-      <RefColNames>messageid</RefColNames>
-    </foreign-key>
-    <column id="40" parent="20" name="userid">
+    <column id="22" parent="16" name="userid">
       <Position>1</Position>
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>716</StateNumber>
+      <StateNumber>668</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <index id="41" parent="20" name="users_pkey">
-      <ObjectId>16408</ObjectId>
+    <index id="23" parent="16" name="users_pkey">
+      <ObjectId>16398</ObjectId>
       <ColNames>userid</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="42" parent="20" name="users_pkey">
-      <ObjectId>16409</ObjectId>
+    <index id="24" parent="16" name="users_userid_uindex">
+      <ObjectId>16400</ObjectId>
+      <ColNames>userid</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="25" parent="16" name="users_pkey">
+      <ObjectId>16399</ObjectId>
       <ColNames>userid</ColNames>
       <UnderlyingIndexName>users_pkey</UnderlyingIndexName>
       <Primary>1</Primary>
