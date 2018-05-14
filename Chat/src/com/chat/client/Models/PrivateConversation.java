@@ -4,6 +4,8 @@ public class PrivateConversation extends Conversation {
     private User userHost;
     private User userInvite;
 
+    public PrivateConversation(){}
+
     public PrivateConversation(User userHost, User userInvite) {
         this.userHost = userHost;
         this.userInvite = userInvite;

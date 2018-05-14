@@ -29,6 +29,7 @@ public class GlobalConversationPresenter {
         FormPanel getFileUploadPanel();
     }
 
+    private int messageCount;
     private Timer timer;
     final HandlerManager eventBus;
     final GlobalConversationPresenter.Display view;
@@ -43,6 +44,7 @@ public class GlobalConversationPresenter {
             }
         };
         this.timer.scheduleRepeating(2000);
+        messageCount = 0;
     }
 
     public void bindEvents(){
@@ -123,19 +125,22 @@ public class GlobalConversationPresenter {
 
 
     public void updateMessage(){
+
         AsyncCallback<GlobalConversation> callback = new AsyncCallback<GlobalConversation>() {
             public void onFailure(Throwable caught) {
                 // TODO: Do something with errors.
             }
 
             public void onSuccess(GlobalConversation globalConversation) {
-                getView().updateMessages(globalConversation.getMessages());
+                Stack<Message> messageList = globalConversation.getMessages();
+                messageCount += messageList.size();
+                getView().updateMessages(messageList);
             }
         };
 
         GlobalConversationDataServiceAsync globalConversationDataServiceAsync = GWT.create(GlobalConversationDataService.class);
 
-        globalConversationDataServiceAsync.get(callback);
+        globalConversationDataServiceAsync.get(messageCount, callback);
 
     }
 

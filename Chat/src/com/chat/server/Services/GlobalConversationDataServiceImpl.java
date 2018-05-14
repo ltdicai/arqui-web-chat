@@ -12,10 +12,10 @@ import java.sql.SQLException;
 public class GlobalConversationDataServiceImpl extends RemoteServiceServlet implements GlobalConversationDataService {
 
     @Override
-    public GlobalConversation get()  {
+    public GlobalConversation get(int lastmessagenumber)  {
         try{
             GlobalConversationDatabaseProcedures globalConversationDatabaseProcedures = new GlobalConversationDatabaseProcedures();
-            return globalConversationDatabaseProcedures.get();
+            return globalConversationDatabaseProcedures.get(lastmessagenumber);
         }
         catch (SQLException ex){
             return null;

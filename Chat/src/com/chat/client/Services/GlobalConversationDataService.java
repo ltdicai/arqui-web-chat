@@ -20,6 +20,6 @@ public interface GlobalConversationDataService extends RemoteService {
         }
     }
 
-    GlobalConversation get();
+    GlobalConversation get(int lastmessagenumber);
     void addMessage(Message message);
 }

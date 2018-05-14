@@ -19,7 +19,7 @@ public class AudioMessageDatabaseProcedures {
         connection = ConnectionManager.getConnection();
     }
 
-    void insert(AudioMessage message, int conversationid) throws SQLException {
+    public void insert(AudioMessage message, int conversationid) throws SQLException {
 
             String insert = "INSERT INTO gwtdbschema.audiomessages"
                     + "(messageid, message) VALUES"

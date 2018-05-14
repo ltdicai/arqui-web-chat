@@ -16,8 +16,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.chat.client.Models.AudioMessage;
 import com.chat.client.Models.ImageMessage;
 import com.chat.client.Models.User;
+import com.chat.server.Services.DatabaseProcedures.AudioMessageDatabaseProcedures;
 import com.chat.server.Services.DatabaseProcedures.ImageMessageDatabaseProcedures;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -55,53 +57,79 @@ public class FileUpload extends HttpServlet{
 
                     //handling file loads
                     System.out.println("Not form field");
-                    String fieldName = item.getFieldName();
                     String fileName = item.getName();
                     if (fileName != null) {
                         fileName = FilenameUtils.getName(fileName);
                     }
 
                     String contentType = item.getContentType();
-                    boolean isInMemory = item.isInMemory();
-                    long sizeInBytes = item.getSize();
-                    System.out.print("Field Name:"+fieldName +",File Name:"+fileName);
-                    System.out.print("Content Type:"+contentType
-                            +",Is In Memory:"+isInMemory+",Size:"+sizeInBytes);
+                    String filePath = getServletContext().getInitParameter("file-path");
+                    File file;
 
-                    byte[] data = item.get();
-                    String pathName = getServletContext()
-                            .getRealPath( "/uploadedFiles/" + fileName);
-                    System.out.print("File name:" +pathName );
-
-                    BufferedImage img = ImageIO.read(new ByteArrayInputStream(data));
-
-                    String uri = request.getScheme() + "://" +   // "http" + "://
-                            request.getServerName() +       // "myhost"
-                            ":" +                           // ":"
-                            request.getServerPort();
-
-                    String message = uri + "/uploadedFiles/" + fileName;
-
-                    File filePath = new File(message);
-                    ImageIO.write(img, contentType, filePath);
-                    img.flush();
-
-                    System.out.print("File Uploaded Successfully!");
+                    if( fileName.lastIndexOf("/") >= 0 ){
+                        fileName = fileName.substring( fileName.lastIndexOf("/"));
+                    }else{
+                        fileName = fileName.substring(fileName.lastIndexOf("/")+1);
+                    }
 
 
                     String userid = request.getParameter("userid");
                     int conversationid = Integer.parseInt(request.getParameter("conversationid"));
 
                     User user = new User(userid);
-                    ImageMessage imageMessage = new ImageMessage(user, message);
-                    ImageMessageDatabaseProcedures imageMessageDatabaseProcedures = new ImageMessageDatabaseProcedures();
-                    imageMessageDatabaseProcedures.insert(imageMessage, conversationid);
+                    filePath += "/AudiosAndImages";
+                    file = new File(getNewFileName(filePath + "/" + fileName));
 
+                    item.write( file ) ;
+
+                    String message = "AudiosAndImages" +  file.getPath().substring(file.getPath().lastIndexOf("/"));
+                    String contentTypeFile = contentType.split("/")[0];
+                    if(contentTypeFile.equals("image")){
+                        ImageMessage imageMessage = new ImageMessage(user, message);
+                        ImageMessageDatabaseProcedures imageMessageDatabaseProcedures = new ImageMessageDatabaseProcedures();
+                        imageMessageDatabaseProcedures.insert(imageMessage, conversationid);
+                    }
+                    else if(contentTypeFile.equals("audio")){
+                        AudioMessage audioMessage = new AudioMessage(user, message);
+                        AudioMessageDatabaseProcedures audioMessageDatabaseProcedures = new AudioMessageDatabaseProcedures();
+                        audioMessageDatabaseProcedures.insert(audioMessage, conversationid);
+
+                    }
+
+
+                    System.out.print("File Uploaded Successfully!");
                 }
             }
         } catch(Exception e){
             System.out.print("File Uploading Failed!" + e.getMessage());
         }
 
+    }
+
+    private static String getNewFileName(String filename) throws IOException {
+        File aFile = new File(filename);
+        int fileNo = 0;
+        String newFileName = "";
+        String filenameType = filename.substring(filename.lastIndexOf("."));
+        String filenameNoType = filename.substring(0, filename.lastIndexOf("."));
+
+        if (aFile.exists() && !aFile.isDirectory()) {
+
+
+            //newFileName = filename.replaceAll(getFileExtension(filename), "(" + fileNo + ")" + getFileExtension(filename));
+
+            while(aFile.exists()){
+                fileNo++;
+
+                aFile = new File(filenameNoType+ "(" + fileNo + ")" + filenameType);
+                newFileName = filenameNoType+ "(" + fileNo + ")" + filenameType;
+            }
+
+
+        } else if (!aFile.exists()) {
+            aFile.createNewFile();
+            newFileName = filename;
+        }
+        return newFileName;
     }
 }

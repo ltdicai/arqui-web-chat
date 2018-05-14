@@ -1,57 +1,76 @@
-create sequence messages_messageid_seq
-;
+-- we don't know how to generate database gwtdb (class Database) :(
+create sequence gwtdbschema.messages_messageid_seq;
 
-create sequence conversations_conversationid_seq
-;
+create sequence gwtdbschema.conversations_conversationid_seq;
 
-create table users
+create table gwtdbschema.users
 (
-	userid varchar(50) not null
-		constraint users_pkey
-			primary key
-)
-;
+  userid varchar(50) not null
+    constraint users_pkey
+    primary key
+);
 
-create table conversations
+create table gwtdbschema.conversations
 (
-	conversationid serial not null
-		constraint conversations_pkey
-			primary key
-)
-;
+  conversationid serial not null
+    constraint conversations_pkey
+    primary key
+);
 
-create table messages
+create table gwtdbschema.messages
 (
-	messageid serial not null
-		constraint messages_pkey
-			primary key,
-	userid varchar(50)
-		constraint messages_userid_fkey
-			references users,
-	conversationid integer
-		constraint messages_conversationid_fkey
-			references conversations
-)
-;
+  messageid      serial      not null
+    constraint messages_pkey
+    primary key,
+  userid         varchar(50) not null
+    constraint messages_userid_fkey
+    references users,
+  conversationid integer     not null
+    constraint messages_conversationid_fkey
+    references conversations
+);
 
-create table textmessages
+create table gwtdbschema.textmessages
 (
-	messageid integer not null
-		constraint textmessages_pkey
-			primary key
-		constraint textmessages_messageid_fkey
-			references messages,
-	message varchar(200) not null
-)
-;
+  messageid integer      not null
+    constraint textmessages_pkey
+    primary key
+    constraint textmessages_messageid_fkey
+    references messages,
+  message   varchar(200) not null
+);
 
-create table globalconversations
+create table gwtdbschema.globalconversations
 (
-	conversationid integer not null
-		constraint globalconversations_pkey
-			primary key
-		constraint globalconversations_conversationid_fkey
-			references conversations
-)
-;
+  conversationid integer not null
+    constraint globalconversations_pkey
+    primary key
+    constraint globalconversations_conversationid_fkey
+    references conversations
+);
+
+create table gwtdbschema.audiomessages
+(
+  messageid integer      not null
+    constraint audiomessage_pkey
+    primary key
+    constraint messageid___fk
+    references messages,
+  message   varchar(200) not null
+);
+
+create unique index audiomessage_messageid_uindex
+  on gwtdbschema.audiomessages (messageid);
+
+create table gwtdbschema.imagemessages
+(
+  messageid integer      not null
+    constraint imagemessages_messages_messageid_fk
+    references messages,
+  message   varchar(200) not null
+);
+
+create unique index imagemessages_messageid_uindex
+  on gwtdbschema.imagemessages (messageid);
+
 

@@ -19,13 +19,13 @@ public class GlobalConversationDatabaseProcedures {
         connection = ConnectionManager.getConnection();
     }
 
-    public GlobalConversation get() throws SQLException, UserNotFoundException {
+    public GlobalConversation get(int lastmessagenumber) throws SQLException, UserNotFoundException {
 
         GlobalConversation globalConversation = new GlobalConversation();
 
-        MessageDataBaseProcedures textMessageDatabaseProcedures = new MessageDataBaseProcedures();
-        Stack<Message> textMessages = textMessageDatabaseProcedures.get(1);
-        Iterator<Message> iterTextMessages = textMessages.iterator();
+        MessageDataBaseProcedures messageDatabaseProcedures = new MessageDataBaseProcedures();
+        Stack<Message> messages = messageDatabaseProcedures.get(1, lastmessagenumber);
+        Iterator<Message> iterTextMessages = messages.iterator();
         while (iterTextMessages.hasNext()){
            globalConversation.addMessage(iterTextMessages.next());
         }

@@ -33,15 +33,16 @@ public class MessageDataBaseProcedures {
         return preparedStatement.getGeneratedKeys().getInt("messageid");
     }
 
-    public Stack<Message> get(int conversationid) throws SQLException, UserNotFoundException {
+    public Stack<Message> get(int conversationid, int lastmessagenumber) throws SQLException, UserNotFoundException {
         String getTextMessages = "(select tm.*, m.conversationid, m.userid, 'text' as typemessage from gwtdbschema.messages m, gwtdbschema.textmessages tm where m.messageid = tm.messageid)";
         String getAudioMessages = "(select am.*, m.conversationid, m.userid, 'audio' as typemessage from gwtdbschema.messages m, gwtdbschema.audiomessages am where m.messageid = am.messageid)";;
         String getImageMessages = "(select im.*, m.conversationid, m.userid, 'image' as typemessage from gwtdbschema.messages m, gwtdbschema.imagemessages im where m.messageid = im.messageid)";;
-        String get = "select * from (" + getTextMessages + " Union " + getAudioMessages + " Union " + getImageMessages + ") as messageJoin WHERE conversationid = ? ORDER by messageid";
+        String get = "select * from (select row_number() over (order by messageid nulls last) as rownum, * from (" + getTextMessages + " Union " + getAudioMessages + " Union " + getImageMessages + ") as messageJoin WHERE conversationid = ? group by messageid, message, conversationid, userid, typemessage ORDER by messageid) as messageFromStar where messageFromStar.rownum >= ? ";
 
         PreparedStatement preparedStatement;
         preparedStatement = connection.prepareCall(get);
         preparedStatement.setInt(1, 1);
+        preparedStatement.setInt(2, lastmessagenumber);
         preparedStatement.execute();
         ResultSet resultSet = preparedStatement.getResultSet();
 
