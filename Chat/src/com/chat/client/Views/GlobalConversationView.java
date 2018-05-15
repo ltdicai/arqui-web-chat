@@ -168,7 +168,7 @@ public class GlobalConversationView extends Composite implements HasWidgets, Glo
 
     private void newImageMessage(String message, String etiqueta, String style) {
         Image newImageMessage = new Image(message);
-        newImageMessage.setUrl(GWT.getHostPageBaseURL() + message);
+        newImageMessage.setUrl(message);
         newImageMessage.setStyleName(style);
         messageBox.add(newImageMessage);
     }
@@ -185,7 +185,7 @@ public class GlobalConversationView extends Composite implements HasWidgets, Glo
 
     private void newAudioMessage(String message, String etiqueta, String style) {
         Audio newAudioMessage = Audio.createIfSupported();
-        newAudioMessage.setSrc(GWT.getHostPageBaseURL() + message);
+        newAudioMessage.setSrc(message);
         newAudioMessage.setStyleName(style);
 
         messageBox.add(newAudioMessage);

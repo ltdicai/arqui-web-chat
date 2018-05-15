@@ -42,6 +42,7 @@ public class GlobalConversationPresenter {
     private Timer timer;
     final GlobalConversationPresenter.Display view;
     private User user;
+    private boolean isUpdating;
 
     public GlobalConversationPresenter(GlobalConversationPresenter.Display view, User user) {
         this.view = view;
@@ -49,11 +50,16 @@ public class GlobalConversationPresenter {
         this.timer = new Timer() {
             @Override
             public void run() {
-                updateMessage();
+                if(isUpdating == false){
+                    isUpdating = true;
+                    updateMessage();
+                    isUpdating = false;
+                }
             }
         };
         this.timer.scheduleRepeating(2000);
         messageCount = 0;
+        isUpdating = false;
     }
 
     public void bind() {
@@ -78,9 +84,6 @@ public class GlobalConversationPresenter {
 
             public void onSuccess(GlobalConversation globalConversation) {
                 Stack<Message> messageList = globalConversation.getMessages();
-                messageCount += messageList.size();
-
-                getView().setError(String.valueOf(messageCount));
                 updateMessageInView(messageList);
             }
         };
@@ -92,6 +95,8 @@ public class GlobalConversationPresenter {
     }
 
     private void updateMessageInView(Stack<Message> messageList){
+        messageCount += messageList.size();
+        getView().setError(String.valueOf(messageCount));
         for (Message item : messageList) {
             if (item.getClass() == TextMessage.class) {
                 TextMessage messageText = (TextMessage) item;
@@ -153,7 +158,7 @@ public class GlobalConversationPresenter {
 
     public void uploadFileComplete()
     {
-        updateMessage();
+        //updateMessage();
     }
 
 }
