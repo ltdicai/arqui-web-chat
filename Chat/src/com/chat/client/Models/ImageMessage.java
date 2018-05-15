@@ -14,3 +14,4 @@ public class ImageMessage extends Message {
         return image;
     }
 }
+

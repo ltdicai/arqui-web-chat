@@ -1,6 +1,8 @@
 package com.chat.client.Views;
 
 import com.chat.client.Presenters.LoginPresenter;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.*;
 
@@ -11,7 +13,7 @@ public class LoginView extends Composite implements HasWidgets, LoginPresenter.D
     HorizontalPanel container;
     TextBox userId;
     Button loginButton;
-
+    LoginPresenter presenter;
 
     public LoginView(){
         container = new HorizontalPanel();
@@ -20,6 +22,20 @@ public class LoginView extends Composite implements HasWidgets, LoginPresenter.D
 
         container.add(userId);
         container.add(loginButton);
+
+        loginButton.addClickHandler(new ClickHandler(){
+            @Override
+            public void onClick(ClickEvent event) {
+                if(presenter != null){
+                    presenter.Login(userId.getText());
+                }
+            }
+        });
+    }
+
+    @Override
+    public void setPresenter(LoginPresenter presenter){
+        this.presenter = presenter;
     }
 
     @Override
@@ -48,19 +64,9 @@ public class LoginView extends Composite implements HasWidgets, LoginPresenter.D
     }
 
     @Override
-    public HasClickHandlers getLoginButton() {
-        //return button to implement its events in the Presenter
-        return loginButton;
-    }
-
-    @Override
     public LoginView getViewInstance() {
         return this;
     }
 
-    @Override
-    public String getIdUser(){
-        return userId.getText();
-    }
 
 }

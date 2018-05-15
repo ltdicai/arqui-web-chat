@@ -1,19 +1,14 @@
 package com.chat.client.Views;
 
-import com.chat.client.Models.AudioMessage;
-import com.chat.client.Models.ImageMessage;
-import com.chat.client.Models.Message;
-import com.chat.client.Models.TextMessage;
 import com.chat.client.Presenters.GlobalConversationPresenter;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.AudioElement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.media.client.Audio;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.*;
 
 import java.util.Iterator;
-import java.util.Stack;
 
 public class GlobalConversationView extends Composite implements HasWidgets, GlobalConversationPresenter.Display {
     Panel container;
@@ -21,25 +16,28 @@ public class GlobalConversationView extends Composite implements HasWidgets, Glo
     Panel sendsContainer;
     TextBox message;
     Button newMessage;
-    Button newImage;
-    Button newAudio;
+    Button newFile;
     FormPanel fileUploadPanel;
     FileUpload fileUpload;
+    Label error;
+
+    private GlobalConversationPresenter presenter;
 
     public GlobalConversationView() {
         container = new AbsolutePanel();
         newMessage = new Button("Enviar");
-        newImage = new Button("Cargar imagen");
-        newAudio = new Button("Cargar audio");
+        newFile = new Button("Cargar imagen o audio");
         message = new TextBox();
         messageBox = new VerticalPanel();
         sendsContainer = new HorizontalPanel();
+        error = new Label();
+        container.add(error);
 
         container.add(messageBox);
         container.add(sendsContainer);
         sendsContainer.add(message);
         sendsContainer.add(newMessage);
-        sendsContainer.add(newImage);
+        sendsContainer.add(newFile);
 
         fileUploadPanel = new FormPanel();
         fileUploadPanel.setVisible(false);
@@ -51,11 +49,53 @@ public class GlobalConversationView extends Composite implements HasWidgets, Glo
             @Override
             public void onChange(ChangeEvent event) {
                 fileUploadPanel.submit();
+                if(presenter != null){
+                    presenter.uploadFileInit();
+                }
             }
         });
         fileUpload.setName("fileuploadchat");
         fileUploadPanel.add(fileUpload);
         fileUploadPanel.setAction(GWT.getModuleBaseURL() + "fileupload?userid=" + Cookies.getCookie("UserID") + "&conversationid=" + 1);
+
+        newFile.addClickHandler(new ClickHandler(){
+            @Override
+            public void onClick(ClickEvent event) {
+                if(presenter != null){
+                    presenter.uploadFile();
+                }
+            }
+        });
+
+        newMessage.addClickHandler(new ClickHandler(){
+            @Override
+            public void onClick(ClickEvent event) {
+                if(presenter != null){
+                    String messageText = message.getText();
+                    message.setText("");
+                    presenter.sendTextMessage(messageText);
+                }
+            }
+        });
+        fileUploadPanel.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler(){
+            @Override
+            public void onSubmitComplete(FormPanel.SubmitCompleteEvent event) {
+                if(presenter != null){
+                    presenter.uploadFileComplete();
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void setError(String error){
+        this.error.setText(error);
+    }
+
+    @Override
+    public void setPresenter(GlobalConversationPresenter presenter){
+        this.presenter = presenter;
     }
 
     @Override
@@ -89,32 +129,8 @@ public class GlobalConversationView extends Composite implements HasWidgets, Glo
     }
 
     @Override
-    public HasClickHandlers getSendTextMessageBotton() {
-        //return button to implement its events in the Presenter
-        return newMessage;
-    }
-
-    @Override
-    public HasClickHandlers getSendImageMessageBotton() {
-        //return button to implement its events in the Presenter
-        return newImage;
-    }
-
-    @Override
-    public HasClickHandlers getSendAudioMessageBotton() {
-        //return button to implement its events in the Presenter
-        return newAudio;
-    }
-
-    @Override
     public GlobalConversationView getViewInstance() {
         return this;
-    }
-
-    @Override
-    public String sendTextMessage() {
-        String messageText = message.getText();
-        return messageText;
     }
 
     @Override
@@ -123,99 +139,65 @@ public class GlobalConversationView extends Composite implements HasWidgets, Glo
     }
 
     @Override
-    public FormPanel getFileUploadPanel() {
-        return fileUploadPanel;
+    public  void newTextMessageForOthers(String message, String etiqueta) {
+        newTextMessage(message, etiqueta, "him");
     }
 
     @Override
-    public void updateMessages(Stack<Message> listMessages) {
-        newMessage.setText(listMessages.toString());
-        for (Message item : listMessages) {
-            if (item.getClass() == TextMessage.class) {
-                TextMessage messageText = (TextMessage) item;
-                Label newTextMessageLabel;
-                if (item.getUser().getUserID() == Cookies.getCookie("UserID")) {
-                    newTextMessageLabel = newTextMessageForMe(messageText);
-                } else {
-                    newTextMessageLabel = newTextMessageForOthers(messageText);
-                }
-                messageBox.add(newTextMessageLabel);
-            } else if (item.getClass() == ImageMessage.class) {
-                ImageMessage messageText = (ImageMessage) item;
-                Image newTextMessageLabel;
-                if (item.getUser().getUserID() == Cookies.getCookie("UserID")) {
-                    newTextMessageLabel = newImageMessageForMe(messageText);
-                } else {
-                    newTextMessageLabel = newImageMessageForOthers(messageText);
-                }
-                messageBox.add(newTextMessageLabel);
-            } else if (item.getClass() == AudioMessage.class) {
-                AudioMessage messageText = (AudioMessage) item;
-                Audio newTextMessageLabel;
-                if (item.getUser().getUserID() == Cookies.getCookie("UserID")) {
-                    newTextMessageLabel = newAudioMessageForMe(messageText);
-                } else {
-                    newTextMessageLabel = newAudioMessageForOthers(messageText);
-                }
-                messageBox.add(newTextMessageLabel);
-                Button audioMessageButton = new Button();
-                audioMessageButton.setText("Reproducir");
-                audioMessageButton.addClickHandler(new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        newTextMessageLabel.getAudioElement().play();
-                    }
-                });
-                messageBox.add(audioMessageButton);
-            }
-        }
+    public  void newTextMessageForMe(String message) {
+        newTextMessage(message, "Tu", "me");
     }
 
-    private Label newTextMessageForOthers(TextMessage message) {
-        return newTextMessage(message, message.getUser().getUserID(), "him");
-    }
-
-    private Label newTextMessageForMe(TextMessage message) {
-        return newTextMessage(message, "Tu", "me");
-    }
-
-    private Label newTextMessage(TextMessage message, String etiqueta, String style) {
-        String recuadro = etiqueta + ": " + message.getMessage();
+    private void newTextMessage(String message, String etiqueta, String style) {
+        String recuadro = etiqueta + ": " + message;
         Label newTextMessageLabel = new Label();
         newTextMessageLabel.setText(recuadro);
         newTextMessageLabel.setStyleName(style);
-        return newTextMessageLabel;
+        messageBox.add(newTextMessageLabel);
     }
 
-    private Image newImageMessageForOthers(ImageMessage message) {
-        return newImageMessage(message, message.getUser().getUserID(), "him");
+    @Override
+    public  void newImageMessageForOthers(String message, String etiqueta) {
+        newImageMessage(message, etiqueta, "him");
     }
 
-    private Image newImageMessageForMe(ImageMessage message) {
-        return newImageMessage(message, "Tu", "me");
+    @Override
+    public  void newImageMessageForMe(String message) {
+        newImageMessage(message, "Tu", "me");
     }
 
-    private Image newImageMessage(ImageMessage message, String etiqueta, String style) {
-        Image newImageMessage = new Image();
-        newImageMessage.setUrl(GWT.getHostPageBaseURL() + message.getImage());
+    private void newImageMessage(String message, String etiqueta, String style) {
+        Image newImageMessage = new Image(message);
+        newImageMessage.setUrl(GWT.getHostPageBaseURL() + message);
         newImageMessage.setStyleName(style);
-        return newImageMessage;
+        messageBox.add(newImageMessage);
     }
 
-    private Audio newAudioMessageForOthers(AudioMessage message) {
-        return newAudioMessage(message, message.getUser().getUserID(), "him");
+    @Override
+    public void newAudioMessageForOthers(String message, String etiqueta) {
+        newAudioMessage(message, etiqueta, "him");
     }
 
-    private Audio newAudioMessageForMe(AudioMessage message) {
-        return newAudioMessage(message, "Tu", "me");
+    @Override
+    public  void newAudioMessageForMe(String message) {
+        newAudioMessage(message, "Tu", "me");
     }
 
-    private Audio newAudioMessage(AudioMessage message, String etiqueta, String style) {
+    private void newAudioMessage(String message, String etiqueta, String style) {
         Audio newAudioMessage = Audio.createIfSupported();
-        newAudioMessage.setSrc(GWT.getHostPageBaseURL() + message.getAudio());
+        newAudioMessage.setSrc(GWT.getHostPageBaseURL() + message);
         newAudioMessage.setStyleName(style);
 
-        return newAudioMessage;
+        messageBox.add(newAudioMessage);
+        Button audioMessageButton = new Button();
+        audioMessageButton.setText("Reproducir");
+        audioMessageButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                newAudioMessage.getAudioElement().play();
+            }
+        });
+        messageBox.add(audioMessageButton);
     }
 
 }

@@ -42,16 +42,13 @@ public class PrivateConversationPresenter {
     }
 
     private Timer timer;
-    final HandlerManager eventBus;
     final PrivateConversationPresenter.Display view;
     private final ConversationServiceAsync rpcService = GWT.create(ConversationService.class);
     private PrivateConversation conversation = null;
 
     public PrivateConversationPresenter(
             Display view,
-            HandlerManager eventBus,
             Integer conversationId){
-        this.eventBus = eventBus;
         this.view = view;
         this.timer = new Timer() {
             @Override

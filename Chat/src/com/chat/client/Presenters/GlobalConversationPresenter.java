@@ -5,9 +5,9 @@ import com.chat.client.Services.GlobalConversationDataService;
 import com.chat.client.Services.GlobalConversationDataServiceAsync;
 import com.chat.client.Views.GlobalConversationView;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.*;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.HasHandlers;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.media.client.Audio;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -16,27 +16,36 @@ import com.google.gwt.user.client.ui.*;
 import java.util.Stack;
 
 public class GlobalConversationPresenter {
-    public interface Display{
-        HasClickHandlers getSendTextMessageBotton();
-        HasClickHandlers getSendImageMessageBotton();
-        HasClickHandlers getSendAudioMessageBotton();
+    public interface Display {
         Widget asWidget();
+
         GlobalConversationView getViewInstance();
-        String sendTextMessage();
-        void updateMessages(Stack<Message> listMessage);
+
         void clearText();
+
         void setVisibleFileUploadPanel(boolean visibility);
-        FormPanel getFileUploadPanel();
+
+        void setPresenter(GlobalConversationPresenter presenter);
+
+        void newTextMessageForMe(String message);
+        void newImageMessageForMe(String message);
+        void newAudioMessageForMe(String message);
+
+        void newTextMessageForOthers(String message, String etiqueta);
+        void newImageMessageForOthers(String message, String etiqueta);
+        void newAudioMessageForOthers(String message, String etiqueta);
+
+        void setError(String error);
     }
 
     private int messageCount;
     private Timer timer;
-    final HandlerManager eventBus;
     final GlobalConversationPresenter.Display view;
+    private User user;
 
-    public GlobalConversationPresenter(GlobalConversationPresenter.Display view, HandlerManager eventBus){
-        this.eventBus = eventBus;
+    public GlobalConversationPresenter(GlobalConversationPresenter.Display view, User user) {
         this.view = view;
+        this.user = user;
         this.timer = new Timer() {
             @Override
             public void run() {
@@ -47,85 +56,21 @@ public class GlobalConversationPresenter {
         messageCount = 0;
     }
 
-    public void bindEvents(){
-        view.getSendTextMessageBotton().addClickHandler(new ClickHandler(){
-            @Override
-            public void onClick(ClickEvent event) {
-                String messageText = getView().sendTextMessage();
-                getView().clearText();
-                String userid = Cookies.getCookie("UserID");
-                User user = new User(userid);
-                TextMessage newMessage = new TextMessage(user, messageText);
-
-                AsyncCallback<Void> callback = new AsyncCallback<Void>() {
-                    public void onFailure(Throwable caught) {
-                        // TODO: Do something with errors.
-                    }
-
-                    public void onSuccess(Void v) {
-                        updateMessage();
-                    }
-                };
-
-                GlobalConversationDataServiceAsync globalConversationDataServiceAsync = GWT.create(GlobalConversationDataService.class);
-
-                globalConversationDataServiceAsync.addMessage(newMessage, callback);
-            }
-        });
-        view.getSendImageMessageBotton().addClickHandler(new ClickHandler(){
-            @Override
-            public void onClick(ClickEvent event) {
-                getView().setVisibleFileUploadPanel(true);
-            }
-
-        });
-        view.getFileUploadPanel().addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
-            @Override
-            public void onSubmitComplete(FormPanel.SubmitCompleteEvent event) {
-                updateMessage();
-            }
-        });
-
-
-        view.getSendAudioMessageBotton().addClickHandler(new ClickHandler(){
-            @Override
-            public void onClick(ClickEvent event) {
-                String messageText = getView().sendTextMessage();
-                getView().clearText();
-                String userid = Cookies.getCookie("UserID");
-                User user = new User(userid);
-                AudioMessage newMessage = new AudioMessage(user, messageText);
-
-                AsyncCallback<Void> callback = new AsyncCallback<Void>() {
-                    public void onFailure(Throwable caught) {
-                        // TODO: Do something with errors.
-                    }
-
-                    public void onSuccess(Void v) {
-                        updateMessage();
-                    }
-                };
-
-                GlobalConversationDataServiceAsync globalConversationDataServiceAsync = GWT.create(GlobalConversationDataService.class);
-
-                globalConversationDataServiceAsync.addMessage(newMessage, callback);
-            }
-        });
+    public void bind() {
+        view.setPresenter(this);
     }
 
-    public void go(final HasWidgets container){
-        bindEvents();
+    public void go(final HasWidgets container) {
+        bind();
         container.clear();
         container.add(view.getViewInstance().asWidget());
     }
 
-    public Display getView(){
+    public Display getView() {
         return view;
     }
 
-
-    public void updateMessage(){
-
+    public void updateMessage() {
         AsyncCallback<GlobalConversation> callback = new AsyncCallback<GlobalConversation>() {
             public void onFailure(Throwable caught) {
                 // TODO: Do something with errors.
@@ -134,7 +79,9 @@ public class GlobalConversationPresenter {
             public void onSuccess(GlobalConversation globalConversation) {
                 Stack<Message> messageList = globalConversation.getMessages();
                 messageCount += messageList.size();
-                getView().updateMessages(messageList);
+
+                getView().setError(String.valueOf(messageCount));
+                updateMessageInView(messageList);
             }
         };
 
@@ -142,6 +89,71 @@ public class GlobalConversationPresenter {
 
         globalConversationDataServiceAsync.get(messageCount, callback);
 
+    }
+
+    private void updateMessageInView(Stack<Message> messageList){
+        for (Message item : messageList) {
+            if (item.getClass() == TextMessage.class) {
+                TextMessage messageText = (TextMessage) item;
+                if (item.getUser().getUserID() == Cookies.getCookie("UserID")) {
+                    getView().newTextMessageForMe(messageText.getMessage());
+                } else {
+                    getView().newTextMessageForOthers(messageText.getMessage(), user.getUserID());
+                }
+
+            } else if (item.getClass() == ImageMessage.class) {
+                ImageMessage messageText = (ImageMessage) item;
+                if (item.getUser().getUserID() == Cookies.getCookie("UserID")) {
+                    getView().newImageMessageForMe(messageText.getImage());
+                } else {
+                    getView().newImageMessageForOthers(messageText.getImage(), user.getUserID());
+                }
+            } else if (item.getClass() == AudioMessage.class) {
+                AudioMessage messageText = (AudioMessage) item;
+                if (item.getUser().getUserID() == Cookies.getCookie("UserID")) {
+                    getView().newAudioMessageForMe(messageText.getAudio());
+                } else {
+                    getView().newAudioMessageForOthers(messageText.getAudio(), user.getUserID());
+                }
+
+            }
+        }
+    }
+
+    public void sendTextMessage(String messageText) {
+        String userid = Cookies.getCookie("UserID");
+        User user = new User(userid);
+        TextMessage newMessage = new TextMessage(user, messageText);
+
+        AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+            public void onFailure(Throwable caught) {
+                // TODO: Do something with errors.
+            }
+
+            public void onSuccess(Void v) {
+                updateMessage();
+            }
+        };
+
+        GlobalConversationDataServiceAsync globalConversationDataServiceAsync = GWT.create(GlobalConversationDataService.class);
+
+        globalConversationDataServiceAsync.addMessage(newMessage, callback);
+
+    }
+
+
+    public void uploadFile() {
+        getView().setVisibleFileUploadPanel(true);
+    }
+
+
+    public void uploadFileInit() {
+        getView().setVisibleFileUploadPanel(true);
+    }
+
+    public void uploadFileComplete()
+    {
+        updateMessage();
     }
 
 }

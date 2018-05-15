@@ -2,6 +2,8 @@ package com.chat.client.Views;
 
 import com.chat.client.Models.User;
 import com.chat.client.Presenters.MenuPresenter;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -24,6 +26,8 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
     Button groups;
     Label userNameLabel;
     private FlexTable allUsersTable;
+
+    private MenuPresenter presenter;
 
     public MenuView(){
         container = new AbsolutePanel();
@@ -56,6 +60,33 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
         container.add(subConteinerButtons);
         container.add(subConteinerChats);
         container.add(allUsersTable);
+
+        logout.addClickHandler(new ClickHandler(){
+            @Override
+            public void onClick(ClickEvent event) {
+                if(presenter != null){
+                    presenter.Logout();
+                }
+            }
+        });
+
+        globalConversation.addClickHandler(new ClickHandler(){
+            @Override
+            public void onClick(ClickEvent event) {
+                if(presenter != null){
+                    presenter.goToGlobalConversation();
+                }
+            }
+        });
+
+        privateComversation.addClickHandler(new ClickHandler(){
+            @Override
+            public void onClick(ClickEvent event) {
+                if(presenter != null){
+                    presenter.goToPrivateConversation();
+                }
+            }
+        });
     }
 
     @Override
@@ -63,6 +94,10 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
         return container;
     }
 
+    @Override
+    public void setPresenter(MenuPresenter presenter){
+        this.presenter = presenter;
+    }
 
     @Override
     public void add(Widget w) {
@@ -84,26 +119,6 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
         return container.remove(w);
     }
 
-    @Override
-    public Button getLogout() {
-        return logout;
-    }
-
-    @Override
-    public Button getButtonGlobalConversation() {
-        return globalConversation;
-    }
-
-    @Override
-    public Button getButtonPrivateConversation() {
-        return privateComversation;
-    }
-
-    @Override
-    public Button testGetButtonPrivateConversation() {
-        return testPrivateConversation;
-    }
-
     public HTMLTable getAllUsersTable() {
         return allUsersTable;
     }
@@ -114,11 +129,6 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
             allUsersTable.setText(idx, 0,  users.get(idx).getUserID());
             allUsersTable.setText(idx, 1,  "offline");
         }
-    }
-
-    @Override
-    public Button getButtonGroups() {
-        return groups;
     }
 
     @Override
