@@ -158,11 +158,12 @@ body {
 
 .menu-view {
     position: absolute;
-    top: 0;
+    top: 60px;
     bottom: 0;
     right: 0;
     left: 0;
     border: 1px solid black;
+    overflow: hidden;
 }
 
 .menu-view .actions {
@@ -185,21 +186,22 @@ body {
 }
 
 .menu-view .conv-picker {
-    height: 20%;
+    height: 10%;
     padding: 10pt 20pt;
 }
 
 .menu-view .conv-picker button {
-    width: 33%;
+    width: 30%;
+    margin: 0 4pt;
 }
 
 .menu-view .all-users {
-    min-height: 40px;
-    overflow-y: scroll;
+    height: 400px;
+    overflow-y: auto;
 }
 
 .menu-view .messages {
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .menu-view .send-actions {
@@ -227,4 +229,8 @@ body {
 .chat-container .send-options {
     height: 20%;
 
+}
+
+button.active {
+    background-color: red;
 }

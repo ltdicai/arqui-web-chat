@@ -99,6 +99,35 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
             @Override
             public void onClick(ClickEvent event) {
                 if(presenter != null){
+                    globalConversation.setStyleName(
+                            globalConversation.getStyleName().replace("active","")
+                    );
+                    privateConversation.setStyleName(
+                            privateConversation.getStyleName().replace("active","")
+                    );
+                    groups.setStyleName(
+                            groups.getStyleName().replace("active","")
+                    );
+                    globalConversation.setStyleName(globalConversation.getStyleName() + " active");
+                    presenter.goToGlobalConversation();
+                }
+            }
+        });
+
+        privateConversation.addClickHandler(new ClickHandler(){
+            @Override
+            public void onClick(ClickEvent event) {
+                if(presenter != null){
+                    globalConversation.setStyleName(
+                            globalConversation.getStyleName().replace("active","")
+                    );
+                    privateConversation.setStyleName(
+                            privateConversation.getStyleName().replace("active","")
+                    );
+                    groups.setStyleName(
+                            groups.getStyleName().replace("active","")
+                    );
+                    privateConversation.setStyleName(privateConversation.getStyleName() + " active");
                     presenter.goToGlobalConversation();
                 }
             }
@@ -114,7 +143,7 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
                 }
             }
         };
-        timer.scheduleRepeating(200);
+        timer.scheduleRepeating(2000);
 
     }
 
