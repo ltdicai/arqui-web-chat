@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class AudioMessageDatabaseProcedures {
@@ -36,7 +38,7 @@ public class AudioMessageDatabaseProcedures {
 
     }
 
-    public Stack<AudioMessage> get(int conversationid) throws SQLException, UserNotFoundException {
+    public List<AudioMessage> get(int conversationid) throws SQLException, UserNotFoundException {
         String get = "select tm.*, m.userid, m.conversationid from gwtdbschema.audiomessages tm, gwtdbschema.messages m where m.conversationid = ? and tm.messageid = m.messageid order by messageid";
 
         PreparedStatement preparedStatement;
@@ -45,7 +47,7 @@ public class AudioMessageDatabaseProcedures {
         preparedStatement.execute();
         ResultSet resultSet = preparedStatement.getResultSet();
 
-        Stack<AudioMessage> messagesList = new Stack<AudioMessage>();
+        List<AudioMessage> messagesList = new ArrayList<>();
 
         UserDatabaseProcedures userDatabaseProcedures = new UserDatabaseProcedures();
         while (resultSet.next()) {

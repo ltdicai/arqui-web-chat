@@ -38,7 +38,7 @@ public class TextMessageDatabaseProcedures {
 
     }
 
-    public Stack<TextMessage> get(int conversationid) throws SQLException, UserNotFoundException {
+    public List<TextMessage> get(int conversationid) throws SQLException, UserNotFoundException {
         String get = "select tm.*, m.userid, m.conversationid from gwtdbschema.textmessages tm, gwtdbschema.messages m where m.conversationid = ? and tm.messageid = m.messageid order by messageid";
 
         PreparedStatement preparedStatement;
@@ -47,7 +47,7 @@ public class TextMessageDatabaseProcedures {
         preparedStatement.execute();
         ResultSet resultSet = preparedStatement.getResultSet();
 
-        Stack<TextMessage> messagesList = new Stack<TextMessage>();
+        List<TextMessage> messagesList = new ArrayList<>();
 
         UserDatabaseProcedures userDatabaseProcedures = new UserDatabaseProcedures();
         while (resultSet.next()) {

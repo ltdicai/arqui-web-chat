@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Stack;
 
 public class PrivateConversationView implements PrivateConversationPresenter.Display {
@@ -92,7 +93,7 @@ public class PrivateConversationView implements PrivateConversationPresenter.Dis
     }
 
     @Override
-    public void updateMessages(Stack<Message> listMessage) {
+    public void updateMessages(List<Message> listMessage) {
         Window.alert("Received messages");
         messagesList.removeAllRows();
         int messageCounter = 0;

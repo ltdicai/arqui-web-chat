@@ -5,10 +5,7 @@ import com.chat.client.Services.ConversationService;
 import com.chat.client.Services.ConversationServiceAsync;
 import com.chat.client.Services.UserDataService;
 import com.chat.client.Services.UserDataServiceAsync;
-import com.chat.client.Views.GlobalConversationView;
-import com.chat.client.Views.LoginView;
-import com.chat.client.Views.MenuView;
-import com.chat.client.Views.PrivateConversationView;
+import com.chat.client.Views.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Cookies;
@@ -93,7 +90,7 @@ public class MenuPresenter {
     }
 
     public void goToGlobalConversation(){
-        GlobalConversationPresenter globalConversationPresenter = new GlobalConversationPresenter(new GlobalConversationView(), loggedUser);
+        GlobalConversationPresenter globalConversationPresenter = new GlobalConversationPresenter(new ConversationView(), loggedUser);
         globalConversationPresenter.go(getView().getSubContainerChat());
     }
 

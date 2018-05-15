@@ -1,23 +1,13 @@
 package com.chat.client.Presenters;
 
-import com.chat.client.Models.AudioMessage;
-import com.chat.client.Models.GlobalConversation;
 import com.chat.client.Models.Message;
 import com.chat.client.Models.PrivateConversation;
-import com.chat.client.Models.TextMessage;
 import com.chat.client.Models.User;
 import com.chat.client.Services.ConversationService;
 import com.chat.client.Services.ConversationServiceAsync;
-import com.chat.client.Services.GlobalConversationDataService;
-import com.chat.client.Services.GlobalConversationDataServiceAsync;
-import com.chat.client.Views.GlobalConversationView;
 import com.chat.client.Views.PrivateConversationView;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -25,6 +15,7 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
+import java.util.List;
 import java.util.Stack;
 
 public class PrivateConversationPresenter {
@@ -35,7 +26,7 @@ public class PrivateConversationPresenter {
         Widget asWidget();
         PrivateConversationView getViewInstance();
         String sendTextMessage();
-        void updateMessages(Stack<Message> listMessage);
+        void updateMessages(List<Message> listMessage);
         void clearText();
         void setVisibleFileUploadPanel(boolean visibility);
         FormPanel getFileUploadPanel();

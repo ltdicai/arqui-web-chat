@@ -1,16 +1,18 @@
 package com.chat.client.Views;
 
-import com.chat.client.Presenters.GlobalConversationPresenter;
+import com.chat.client.Presenters.ConversationPresenter;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.media.client.Audio;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.*;
 
 import java.util.Iterator;
 
-public class GlobalConversationView extends Composite implements HasWidgets, GlobalConversationPresenter.Display {
+public class ConversationView extends Composite implements HasWidgets, ConversationPresenter.Display {
     Panel container;
     Panel messageBox;
     Panel sendsContainer;
@@ -21,9 +23,9 @@ public class GlobalConversationView extends Composite implements HasWidgets, Glo
     FileUpload fileUpload;
     Label error;
 
-    private GlobalConversationPresenter presenter;
+    private ConversationPresenter presenter;
 
-    public GlobalConversationView() {
+    public ConversationView() {
         container = new AbsolutePanel();
         newMessage = new Button("Enviar");
         newFile = new Button("Cargar imagen o audio");
@@ -94,7 +96,7 @@ public class GlobalConversationView extends Composite implements HasWidgets, Glo
     }
 
     @Override
-    public void setPresenter(GlobalConversationPresenter presenter){
+    public void setPresenter(ConversationPresenter presenter){
         this.presenter = presenter;
     }
 
@@ -129,7 +131,7 @@ public class GlobalConversationView extends Composite implements HasWidgets, Glo
     }
 
     @Override
-    public GlobalConversationView getViewInstance() {
+    public ConversationView getViewInstance() {
         return this;
     }
 

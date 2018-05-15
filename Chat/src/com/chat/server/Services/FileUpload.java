@@ -32,12 +32,12 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 
-public class FileUpload extends HttpServlet{
-    public void doPost(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
+public class FileUpload extends HttpServlet {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         FileItemFactory factory = new DiskFileItemFactory();
         // Create a new file upload handler
         ServletFileUpload upload = new ServletFileUpload(factory);
-        try{
+        try {
             // Parse the request
             List items = upload.parseRequest(request);
 
@@ -47,45 +47,33 @@ public class FileUpload extends HttpServlet{
             //FileItemIterator iter = upload.getItemIterator(request);
 
             while (iter.hasNext()) {
-                FileItem item = (FileItem)  iter.next();
+                FileItem item = (FileItem) iter.next();
 
                 //handling a normal form-field
-                if(item.isFormField()) {
+                if (item.isFormField()) {
                     System.out.println("Got a form field");
                     String name = item.getFieldName();
                     String value = item.getString();
-                    System.out.print("Name:"+name+",Value:"+value);
+                    System.out.print("Name:" + name + ",Value:" + value);
 
                 } else {
 
                     //handling file loads
                     System.out.println("Not form field");
-                    String fileName = item.getName();
-                    if (fileName != null) {
-                        fileName = FilenameUtils.getName(fileName);
-                    }
 
                     String contentType = item.getContentType();
                     String userid = request.getParameter("userid");
                     int conversationid = Integer.parseInt(request.getParameter("conversationid"));
-//
-                  User user = new User(userid);
-//                    filePath += "/AudiosAndImages";
-//                    file = new File(getNewFileName(filePath + "/" + fileName));
-//
-//                    item.write(file);
-
-                    //String message = "AudiosAndImages" +  file.getPath().substring(file.getPath().lastIndexOf("/"));
+                    User user = new User(userid);
                     String message = Base64.getEncoder().encodeToString(item.get());
                     String contentTypeFile = contentType.split("/")[0];
-                    if(contentTypeFile.equals("image")){
-                        message = "data:" + contentType + ";base64,"+ message;
+                    if (contentTypeFile.equals("image")) {
+                        message = "data:" + contentType + ";base64," + message;
                         ImageMessage imageMessage = new ImageMessage(user, message);
                         ImageMessageDatabaseProcedures imageMessageDatabaseProcedures = new ImageMessageDatabaseProcedures();
                         imageMessageDatabaseProcedures.insert(imageMessage, conversationid);
-                    }
-                    else if(contentTypeFile.equals("audio")){
-                        message = "data:" + contentType + ";base64,"+ message;
+                    } else if (contentTypeFile.equals("audio")) {
+                        message = "data:" + contentType + ";base64," + message;
                         AudioMessage audioMessage = new AudioMessage(user, message);
                         AudioMessageDatabaseProcedures audioMessageDatabaseProcedures = new AudioMessageDatabaseProcedures();
                         audioMessageDatabaseProcedures.insert(audioMessage, conversationid);
@@ -95,36 +83,9 @@ public class FileUpload extends HttpServlet{
                     System.out.print("File Uploaded Successfully!");
                 }
             }
-        } catch(Exception e){
+        } catch (Exception e) {
             System.out.print("File Uploading Failed!" + e.getMessage());
         }
 
-    }
-
-    private static String getNewFileName(String filename) throws IOException {
-        File aFile = new File(filename);
-        int fileNo = 0;
-        String newFileName = "";
-        String filenameType = filename.substring(filename.lastIndexOf("."));
-        String filenameNoType = filename.substring(0, filename.lastIndexOf("."));
-
-        if (aFile.exists() && !aFile.isDirectory()) {
-
-
-            //newFileName = filename.replaceAll(getFileExtension(filename), "(" + fileNo + ")" + getFileExtension(filename));
-
-            while(aFile.exists()){
-                fileNo++;
-
-                aFile = new File(filenameNoType+ "(" + fileNo + ")" + filenameType);
-                newFileName = filenameNoType+ "(" + fileNo + ")" + filenameType;
-            }
-
-
-        } else if (!aFile.exists()) {
-            aFile.createNewFile();
-            newFileName = filename;
-        }
-        return newFileName;
     }
 }

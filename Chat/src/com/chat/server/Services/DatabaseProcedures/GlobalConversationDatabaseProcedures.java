@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Stack;
 
 public class GlobalConversationDatabaseProcedures {
@@ -24,7 +25,7 @@ public class GlobalConversationDatabaseProcedures {
         GlobalConversation globalConversation = new GlobalConversation();
 
         MessageDataBaseProcedures messageDatabaseProcedures = new MessageDataBaseProcedures();
-        Stack<Message> messages = messageDatabaseProcedures.get(1, lastmessagenumber);
+        List<Message> messages = messageDatabaseProcedures.get(1, lastmessagenumber);
         Iterator<Message> iterTextMessages = messages.iterator();
         while (iterTextMessages.hasNext()){
            globalConversation.addMessage(iterTextMessages.next());

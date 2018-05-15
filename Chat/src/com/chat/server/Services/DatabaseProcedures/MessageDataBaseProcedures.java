@@ -15,7 +15,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.Stack;
 
 public class MessageDataBaseProcedures {
@@ -44,11 +46,11 @@ public class MessageDataBaseProcedures {
         return preparedStatement.getGeneratedKeys().getInt("messageid");
     }
 
-    public Stack<Message> get(int conversationid, int lastmessagenumber) throws SQLException, UserNotFoundException {
+    public List<Message> get(int conversationid, int lastmessagenumber) throws SQLException, UserNotFoundException {
         String getTextMessages = "(select tm.*, m.conversationid, m.userid, 'text' as typemessage from gwtdbschema.messages m, gwtdbschema.textmessages tm where m.messageid = tm.messageid)";
         String getAudioMessages = "(select am.*, m.conversationid, m.userid, 'audio' as typemessage from gwtdbschema.messages m, gwtdbschema.audiomessages am where m.messageid = am.messageid)";;
         String getImageMessages = "(select im.*, m.conversationid, m.userid, 'image' as typemessage from gwtdbschema.messages m, gwtdbschema.imagemessages im where m.messageid = im.messageid)";;
-        String get = "select * from (select row_number() over (order by messageid nulls last) as rownum, * from (" + getTextMessages + " Union " + getAudioMessages + " Union " + getImageMessages + ") as messageJoin WHERE conversationid = ? group by messageid, message, conversationid, userid, typemessage ORDER by messageid) as messageFromStar where messageFromStar.rownum > ? ";
+        String get = "select * from (select row_number() over (order by messageid nulls last) as rownum, * from (" + getTextMessages + " Union " + getAudioMessages + " Union " + getImageMessages + ") as messageJoin WHERE conversationid = ? group by messageid, message, conversationid, userid, typemessage ORDER by messageid) as messageFromStar where messageFromStar.rownum = ? + 1 ";
 
         PreparedStatement preparedStatement;
         preparedStatement = connection.prepareCall(get);
@@ -57,7 +59,7 @@ public class MessageDataBaseProcedures {
         preparedStatement.execute();
         ResultSet resultSet = preparedStatement.getResultSet();
 
-        Stack<Message> messagesList = new Stack<>();
+        List<Message> messagesList = new ArrayList<>();
 
         UserDatabaseProcedures userDatabaseProcedures = new UserDatabaseProcedures();
         while (resultSet.next()) {
