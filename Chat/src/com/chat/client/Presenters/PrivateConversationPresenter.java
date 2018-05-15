@@ -39,38 +39,46 @@ public class PrivateConversationPresenter {
         void clearText();
         void setVisibleFileUploadPanel(boolean visibility);
         FormPanel getFileUploadPanel();
+        void setPresenter(PrivateConversationPresenter presenter);
     }
 
     private Timer timer;
     final PrivateConversationPresenter.Display view;
     private final ConversationServiceAsync rpcService = GWT.create(ConversationService.class);
     private PrivateConversation conversation = null;
+    private User loggedUser;
 
     public PrivateConversationPresenter(
             Display view,
-            Integer conversationId){
+            User loggedUser,
+            User inviteUser){
         this.view = view;
-        this.timer = new Timer() {
+        view.setPresenter(this);
+        /*this.timer = new Timer() {
             @Override
             public void run() {
                 updateMessage();
             }
         };
-        this.timer.scheduleRepeating(2000);
+        this.timer.scheduleRepeating(2000);*/
         bindEvents();
 
         AsyncCallback<PrivateConversation> callback = new AsyncCallback<PrivateConversation>() {
             public void onFailure(Throwable caught) {
+                Window.alert(caught.getMessage());
                 // TODO: Do something with errors.
             }
 
             public void onSuccess(PrivateConversation conv) {
+                Window.alert(conv.getId().toString());
                 conversation = conv;
                 getView().updateMessages(conv.getMessages());
             }
         };
 
-        rpcService.getPrivateConversation(conversationId, callback);
+        rpcService.getPrivateConversationBetween(loggedUser, inviteUser, callback);
+
+        //rpcService.getPrivateConversation(conversationId, callback);
     }
 
     public void bindEvents(){

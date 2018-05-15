@@ -5,6 +5,7 @@ import com.chat.client.Models.Message;
 import com.chat.client.Models.PrivateConversation;
 import com.chat.client.Models.User;
 import com.chat.client.Services.ConversationService;
+import com.chat.client.errors.ConversationNotFoundException;
 import com.chat.server.Services.DatabaseProcedures.ConversationDatabaseProcedures;
 import com.chat.server.Services.DatabaseProcedures.UserDatabaseProcedures;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -49,6 +50,18 @@ public class ConversationServiceImpl extends RemoteServiceServlet implements Con
         }
         catch (SQLException ex){
             // TODO: Handle exceptions
+        }
+    }
+
+    @Override
+    public PrivateConversation getPrivateConversationBetween(User loggedUser, User inviteUser) {
+        try {
+            return db.getPrivateConversationBetween(loggedUser, inviteUser);
+        } catch (ConversationNotFoundException exc) {
+            return createPrivateConversation(loggedUser, inviteUser);
+        } catch (Exception exc) {
+            // TODO: Handle exceptions
+            return null;
         }
     }
 

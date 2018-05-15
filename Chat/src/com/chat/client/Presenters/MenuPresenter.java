@@ -41,8 +41,8 @@ public class MenuPresenter {
         userService.get(Cookies.getCookie("UserID"), new AsyncCallback<User>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("User " + Cookies.getCookie("UserID") + " doesn't exist");
-                goLoginPage();
+                //Window.alert("User " + Cookies.getCookie("UserID") + " doesn't exist");
+                //goLoginPage();
             }
 
             @Override
@@ -97,10 +97,13 @@ public class MenuPresenter {
         globalConversationPresenter.go(getView().getSubContainerChat());
     }
 
-    public void goToPrivateConversation(){
+    public void goToPrivateConversation(User user){
         PrivateConversationPresenter presenter = new PrivateConversationPresenter(
-                new PrivateConversationView(),
-                1);
+                new PrivateConversationView(), loggedUser, user);
         presenter.go(getView().getSubContainerChat());
+    }
+
+    public User getLoggedUser() {
+        return loggedUser;
     }
 }

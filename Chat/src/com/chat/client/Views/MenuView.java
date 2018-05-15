@@ -8,6 +8,7 @@ import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
 import java.util.Iterator;
@@ -45,14 +46,12 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
         globalConversation = new Button("Chat Global");
         privateComversation = new Button("Chats Privados");
         groups = new Button("Chats Grupales");
-        testPrivateConversation = new Button("TEST Crear chat privado");
 
         allUsersTable = new FlexTable();
 
         subConteinerButtons.add(globalConversation);
         subConteinerButtons.add(privateComversation);
         subConteinerButtons.add(groups);
-        subConteinerButtons.add(testPrivateConversation);
 
         subConteinerChats.add(globalConversation);
 
@@ -79,14 +78,6 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
             }
         });
 
-        privateComversation.addClickHandler(new ClickHandler(){
-            @Override
-            public void onClick(ClickEvent event) {
-                if(presenter != null){
-                    presenter.goToPrivateConversation();
-                }
-            }
-        });
     }
 
     @Override
@@ -126,8 +117,26 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
     public void showUsers(List<User> users) {
         allUsersTable.removeAllRows();
         for(int idx = 0; idx < users.size(); ++idx) {
-            allUsersTable.setText(idx, 0,  users.get(idx).getUserID());
+            User user = users.get(idx);
+            if (user.equals(presenter.getLoggedUser())) {
+                continue;
+            }
+            allUsersTable.setText(idx, 0,  user.getUserID());
             allUsersTable.setText(idx, 1,  "offline");
+            Button openPrivateConversation = new Button("Privado");
+            openPrivateConversation.setLayoutData(users.get(idx).getUserID());
+            openPrivateConversation.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    Window.alert((String) openPrivateConversation.getLayoutData());
+                    if (presenter != null) {
+                        presenter.goToPrivateConversation(user);
+                    }
+                }
+            });
+
+            allUsersTable.setWidget(idx, 2, openPrivateConversation);
+
         }
     }
 

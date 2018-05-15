@@ -18,6 +18,7 @@ public class PrivateConversationView implements PrivateConversationPresenter.Dis
     private Panel mainContainer;
     private Panel chatContainer;
     private Button sendButton;
+    private PrivateConversationPresenter presenter = null;
 
     public PrivateConversationView(){
         mainContainer = new HorizontalPanel();
@@ -77,6 +78,11 @@ public class PrivateConversationView implements PrivateConversationPresenter.Dis
     @Override
     public FormPanel getFileUploadPanel() {
         return null;
+    }
+
+    @Override
+    public void setPresenter(PrivateConversationPresenter presenter) {
+        this.presenter = presenter;
     }
 
 }
