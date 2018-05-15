@@ -10,18 +10,38 @@ import java.util.Iterator;
 
 public class LoginView extends Composite implements HasWidgets, LoginPresenter.Display {
 
-    HorizontalPanel container;
+    FlowPanel container;
+    VerticalPanel loginContainer;
+    FlowPanel loginBox;
     TextBox userId;
     Button loginButton;
     LoginPresenter presenter;
 
     public LoginView(){
-        container = new HorizontalPanel();
+        container = new FlowPanel();
+        container.addStyleName("login-view");
+
+        loginBox = new FlowPanel();
+        loginBox.addStyleName("box");
+
+        loginContainer = new VerticalPanel();
+        loginContainer.addStyleName("form");
+        loginContainer.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+
+        HTMLPanel loginInfo = new HTMLPanel("<h2>Ingresa tu alias</h2>");
+
         loginButton = new Button("Login");
         userId = new TextBox();
 
-        container.add(userId);
-        container.add(loginButton);
+        loginContainer.add(loginInfo);
+        loginContainer.add(userId);
+        loginContainer.add(loginButton);
+
+        loginBox.add(loginContainer);
+
+        container.add(loginBox);
+
+        userId.setFocus(true);
 
         loginButton.addClickHandler(new ClickHandler(){
             @Override

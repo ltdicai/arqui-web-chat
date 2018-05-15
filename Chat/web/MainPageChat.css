@@ -135,3 +135,24 @@ body {
 {
     clear: both;
 }
+
+.login-view {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+.login-view .box {
+    margin: 10% auto;
+    width: 40%;
+    height: 50%;
+    padding: 10px 0;
+    border: 2px solid black;
+}
+
+.login-view .form {
+    margin: 0 auto;
+}
+
