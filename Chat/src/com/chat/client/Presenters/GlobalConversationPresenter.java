@@ -10,27 +10,22 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 
 import java.util.List;
-import java.util.Stack;
 
 public class GlobalConversationPresenter implements ConversationPresenter.SpecificConversation {
 
     private ConversationPresenter conversationPresenter;
     private Timer timer;
-    private boolean isUpdating;
 
     public GlobalConversationPresenter(ConversationPresenter.Display view, User user) {
         conversationPresenter = new ConversationPresenter(view, user);
         this.timer = new Timer() {
             @Override
             public void run() {
-                if (!isUpdating) {
-                    isUpdating = true;
-                    updateMessage();
-                    isUpdating = false;
-                }
+                cancel();
+                updateMessage();
             }
         };
-        this.timer.scheduleRepeating(2000);
+        this.timer.scheduleRepeating(500);
     }
 
     public void go(final HasWidgets container) {
@@ -47,6 +42,14 @@ public class GlobalConversationPresenter implements ConversationPresenter.Specif
             public void onSuccess(GlobalConversation globalConversation) {
                 List<Message> messageList = globalConversation.getMessages();
                 conversationPresenter.updateMessageInView(messageList);
+                timer = new Timer() {
+                    @Override
+                    public void run() {
+                        timer.cancel();
+                        updateMessage();
+                    }
+                };
+                timer.scheduleRepeating(500);
             }
         };
 

@@ -17,6 +17,8 @@ public class ConversationPresenter {
 
         void clearText();
 
+        void clearFiles();
+
         void setVisibleFileUploadPanel(boolean visibility);
 
         void setPresenter(ConversationPresenter presenter);
@@ -36,9 +38,7 @@ public interface SpecificConversation{
     void sendTextMessage(String messageText);
 }
 
-
     private int messageCount;
-    private Timer timer;
     final ConversationPresenter.Display view;
     private User user;
     private boolean isUpdating;
@@ -81,7 +81,6 @@ public interface SpecificConversation{
 
     public void updateMessageInView(List<Message> messageList){
         messageCount += messageList.size();
-        getView().setError(String.valueOf(messageCount));
         for (Message item : messageList) {
             if (item.getClass() == TextMessage.class) {
                 TextMessage messageText = (TextMessage) item;
@@ -117,11 +116,13 @@ public interface SpecificConversation{
 
 
     public void uploadFileInit() {
-        getView().setVisibleFileUploadPanel(true);
+
     }
 
     public void uploadFileComplete()
     {
+        getView().setVisibleFileUploadPanel(false);
+        getView().clearFiles();
         //updateMessage();
     }
 

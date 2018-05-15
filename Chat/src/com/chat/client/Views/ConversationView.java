@@ -2,10 +2,7 @@ package com.chat.client.Views;
 
 import com.chat.client.Presenters.ConversationPresenter;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.media.client.Audio;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.*;
@@ -111,6 +108,11 @@ public class ConversationView extends Composite implements HasWidgets, Conversat
     }
 
     @Override
+    public void clearFiles(){
+        fileUpload.getElement().setPropertyString("value", "");
+    }
+
+    @Override
     public void clear() {
         container.clear();
     }
@@ -189,14 +191,29 @@ public class ConversationView extends Composite implements HasWidgets, Conversat
         Audio newAudioMessage = Audio.createIfSupported();
         newAudioMessage.setSrc(message);
         newAudioMessage.setStyleName(style);
-
         messageBox.add(newAudioMessage);
         Button audioMessageButton = new Button();
         audioMessageButton.setText("Reproducir");
+        newAudioMessage.addEndedHandler(new EndedHandler() {
+            @Override
+            public void onEnded(EndedEvent event) {
+                audioMessageButton.setText("Reproducir");
+                newAudioMessage.setCurrentTime(0);
+            }
+        });
+
         audioMessageButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                newAudioMessage.getAudioElement().play();
+
+                if(audioMessageButton.getText() == "Reproducir"){
+                    audioMessageButton.setText("Detener");
+                    newAudioMessage.getAudioElement().play();
+                }
+                else{
+                    audioMessageButton.setText("Reproducir");
+                    newAudioMessage.getAudioElement().pause();
+                }
             }
         });
         messageBox.add(audioMessageButton);
