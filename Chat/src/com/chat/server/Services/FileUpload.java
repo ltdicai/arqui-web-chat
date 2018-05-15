@@ -8,8 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,6 +23,7 @@ import com.chat.client.Models.ImageMessage;
 import com.chat.client.Models.User;
 import com.chat.server.Services.DatabaseProcedures.AudioMessageDatabaseProcedures;
 import com.chat.server.Services.DatabaseProcedures.ImageMessageDatabaseProcedures;
+import com.google.gwt.user.server.Base64Utils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileItemIterator;
@@ -63,37 +66,29 @@ public class FileUpload extends HttpServlet{
                     }
 
                     String contentType = item.getContentType();
-                    String filePath = getServletContext().getInitParameter("file-path");
-                    File file;
-
-                    if( fileName.lastIndexOf("/") >= 0 ){
-                        fileName = fileName.substring( fileName.lastIndexOf("/"));
-                    }else{
-                        fileName = fileName.substring(fileName.lastIndexOf("/")+1);
-                    }
-
-
                     String userid = request.getParameter("userid");
                     int conversationid = Integer.parseInt(request.getParameter("conversationid"));
+//
+                  User user = new User(userid);
+//                    filePath += "/AudiosAndImages";
+//                    file = new File(getNewFileName(filePath + "/" + fileName));
+//
+//                    item.write(file);
 
-                    User user = new User(userid);
-                    filePath += "/AudiosAndImages";
-                    file = new File(getNewFileName(filePath + "/" + fileName));
-
-                    item.write( file ) ;
-
-                    String message = "AudiosAndImages" +  file.getPath().substring(file.getPath().lastIndexOf("/"));
+                    //String message = "AudiosAndImages" +  file.getPath().substring(file.getPath().lastIndexOf("/"));
+                    String message = Base64.getEncoder().encodeToString(item.get());
                     String contentTypeFile = contentType.split("/")[0];
                     if(contentTypeFile.equals("image")){
+                        message = "data:" + contentType + ";base64,"+ message;
                         ImageMessage imageMessage = new ImageMessage(user, message);
                         ImageMessageDatabaseProcedures imageMessageDatabaseProcedures = new ImageMessageDatabaseProcedures();
                         imageMessageDatabaseProcedures.insert(imageMessage, conversationid);
                     }
                     else if(contentTypeFile.equals("audio")){
+                        message = "data:" + contentType + ";base64,"+ message;
                         AudioMessage audioMessage = new AudioMessage(user, message);
                         AudioMessageDatabaseProcedures audioMessageDatabaseProcedures = new AudioMessageDatabaseProcedures();
                         audioMessageDatabaseProcedures.insert(audioMessage, conversationid);
-
                     }
 
 
