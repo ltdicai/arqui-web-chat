@@ -70,6 +70,10 @@ public class PrivateConversationPresenter {
             }
 
             public void onSuccess(PrivateConversation conv) {
+                if (conv == null) {
+                    Window.alert("Conv is null!");
+                    return;
+                }
                 Window.alert(conv.getId().toString());
                 conversation = conv;
                 getView().updateMessages(conv.getMessages());

@@ -6,7 +6,6 @@
 
     <entry-point class='com.chat.client.MainPageChat'/>
 
-    <servlet path="/AppService" class="com.chat.server.Services.AppServiceImpl"/>
     <servlet path="/UserDataService" class="com.chat.server.Services.UserDataServiceImpl"/>
     <servlet path="/TextMessageDataService" class="com.chat.server.Services.TextMessageDataServiceImpl"/>
     <servlet path="/GlobalConversationDataService" class="com.chat.server.Services.GlobalConversationDataServiceImpl"/>

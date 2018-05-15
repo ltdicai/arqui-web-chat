@@ -15,11 +15,13 @@ import java.sql.Statement;
 
 public class ConversationDatabaseProcedures {
     private Connection connection;
-    private UserDatabaseProcedures userDatabaseProcedures;
+    private final UserDatabaseProcedures userDatabaseProcedures;
+    private final MessageDataBaseProcedures messageDataBaseProcedures;
 
     public ConversationDatabaseProcedures() throws SQLException {
         connection = ConnectionManager.getConnection();
         userDatabaseProcedures = new UserDatabaseProcedures();
+        messageDataBaseProcedures = new MessageDataBaseProcedures();
     }
 
     public PrivateConversation getPrivateConversation(Integer conversationId) throws SQLException, ConversationNotFoundException, UserNotFoundException{
@@ -38,6 +40,10 @@ public class ConversationDatabaseProcedures {
                 userDatabaseProcedures.get(resultSet.getString("inviteuserid"))
         );
         conversation.setId(conversationId);
+
+        for (Message message: messageDataBaseProcedures.get(conversationId, 0)) {
+            conversation.addMessage(message);
+        }
         return conversation;
     }
 
@@ -68,7 +74,7 @@ public class ConversationDatabaseProcedures {
     }
 
     public PrivateConversation getPrivateConversationBetween(User loggedUser, User inviteUser)
-            throws SQLException, ConversationNotFoundException {
+            throws SQLException, ConversationNotFoundException, UserNotFoundException {
         String query = "SELECT conversationid, hostuserid, inviteuserid "
                 + "FROM gwtdbschema.privateconversations "
                 + "WHERE hostuserid = ? AND inviteuserid = ? "
@@ -85,6 +91,9 @@ public class ConversationDatabaseProcedures {
         }
         PrivateConversation result = new PrivateConversation(loggedUser, inviteUser);
         result.setId(resultSet.getInt("conversationid"));
+        for (Message message: messageDataBaseProcedures.get(result.getId(), 0)) {
+            result.addMessage(message);
+        }
         return result;
     }
 }

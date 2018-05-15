@@ -16,13 +16,14 @@ import java.util.List;
 
 public class MenuView extends Composite implements HasWidgets, MenuPresenter.Display {
 
+    private Panel mainContainer;
     Panel container;
     Panel subContainerUser;
     Panel subConteinerChats;
     Panel subConteinerButtons;
     Button logout;
     Button globalConversation;
-    Button privateComversation;
+    Button privateConversation;
     Button testPrivateConversation;
     Button groups;
     Label userNameLabel;
@@ -33,32 +34,78 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
     public MenuView(){
         container = new AbsolutePanel();
 
-        subContainerUser = new HorizontalPanel();
-        subConteinerButtons = new HorizontalPanel();
-        subConteinerChats = new HorizontalPanel();
+        mainContainer = new FlowPanel();
+        mainContainer.setStyleName("menu-view");
+        FlowPanel actionsColumn = new FlowPanel();
+        actionsColumn.setStyleName("actions");
+        FlowPanel chatColumn = new FlowPanel();
+        chatColumn.setStyleName("chat");
+
+        mainContainer.add(actionsColumn);
+        mainContainer.add(chatColumn);
+
+        FlowPanel userInfo = new FlowPanel();
+        userInfo.setStyleName("user-info");
+        FlowPanel conversationPicker = new FlowPanel();
+        conversationPicker.setStyleName("conv-picker");
+        FlowPanel allUsers = new FlowPanel();
+        allUsers.setStyleName("all-users");
 
         userNameLabel = new Label();
         logout = new Button("Logout");
 
-        subContainerUser.add(userNameLabel);
-        subContainerUser.add(logout);
+        userInfo.add(userNameLabel);
+        userInfo.add(logout);
 
-        globalConversation = new Button("Chat Global");
-        privateComversation = new Button("Chats Privados");
-        groups = new Button("Chats Grupales");
+        globalConversation = new Button("Global");
+        privateConversation = new Button("Privado");
+        groups = new Button("Grupos");
 
+        // Conversation picker
+        conversationPicker.add(globalConversation);
+        conversationPicker.add(privateConversation);
+        conversationPicker.add(groups);
+
+        // All users table
         allUsersTable = new FlexTable();
 
-        subConteinerButtons.add(globalConversation);
-        subConteinerButtons.add(privateComversation);
-        subConteinerButtons.add(groups);
+        allUsers.add(allUsersTable);
 
-        subConteinerChats.add(globalConversation);
+        actionsColumn.add(userInfo);
+        actionsColumn.add(conversationPicker);
+        actionsColumn.add(allUsers);
 
-        container.add(subContainerUser);
-        container.add(subConteinerButtons);
-        container.add(subConteinerChats);
-        container.add(allUsersTable);
+        FlowPanel messages = new FlowPanel();
+        messages.setStyleName("messages");
+        FlowPanel sendActions = new FlowPanel();
+        sendActions.setStyleName("send-actions");
+
+
+
+        subContainerUser = new HorizontalPanel();
+        subConteinerButtons = new HorizontalPanel();
+        subConteinerChats = chatColumn;
+
+        //userNameLabel = new Label();
+        //logout = new Button("Logout");
+
+        //subContainerUser.add(userNameLabel);
+        //subContainerUser.add(logout);
+
+
+
+
+
+        //subConteinerButtons.add(globalConversation);
+        //subConteinerButtons.add(privateComversation);
+        //subConteinerButtons.add(groups);
+
+        //subConteinerChats.add(globalConversation);
+
+        //container.add(subContainerUser);
+        //container.add(subConteinerButtons);
+        //container.add(subConteinerChats);
+        //container.add(allUsersTable);
 
         logout.addClickHandler(new ClickHandler(){
             @Override
@@ -82,7 +129,7 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
 
     @Override
     public Widget asWidget() {
-        return container;
+        return mainContainer;
     }
 
     @Override

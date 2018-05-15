@@ -5,10 +5,6 @@
          version="4.0">
 
     <servlet>
-        <servlet-name>com.chat.MainPageChat AppService</servlet-name>
-        <servlet-class>com.chat.server.Services.AppServiceImpl</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>com.chat.MainPageChat UserDataService</servlet-name>
         <servlet-class>com.chat.server.Services.UserDataServiceImpl</servlet-class>
     </servlet>
@@ -23,10 +19,6 @@
     <servlet-mapping>
         <servlet-name>com.chat.MainPageChat ConversationService</servlet-name>
         <url-pattern>/com.chat.MainPageChat/ConversationService</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>com.chat.MainPageChat AppService</servlet-name>
-        <url-pattern>/com.chat.MainPageChat/AppService</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>com.chat.MainPageChat UserDataService</servlet-name>
