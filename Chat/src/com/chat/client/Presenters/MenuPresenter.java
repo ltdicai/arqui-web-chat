@@ -23,6 +23,7 @@ public class MenuPresenter {
         MenuView getViewInstance();
         void setLabel(String texto);
         void showUsers(List<User> users);
+        void doLogout();
         HasWidgets getSubContainerChat();
         void setPresenter(MenuPresenter presenter);
     }
@@ -46,18 +47,7 @@ public class MenuPresenter {
             public void onSuccess(User result) {
                 MenuPresenter.this.loggedUser = result;
                 MenuPresenter.this.view.setLabel(Cookies.getCookie("UserID"));
-            }
-        });
 
-        userService.getAllUsers(new AsyncCallback<List<User>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-
-            }
-
-            @Override
-            public void onSuccess(List<User> result) {
-                MenuPresenter.this.view.showUsers(result);
             }
         });
 
@@ -80,6 +70,7 @@ public class MenuPresenter {
 
     public void Logout(){
         Cookies.removeCookie("UserID");
+        getView().doLogout();
         goLoginPage();
     }
 
@@ -102,5 +93,20 @@ public class MenuPresenter {
 
     public User getLoggedUser() {
         return loggedUser;
+    }
+
+    public void updateUserList() {
+        userService.getAllUsers(new AsyncCallback<List<User>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+
+            }
+
+            @Override
+            public void onSuccess(List<User> result) {
+                getView().showUsers(result);
+            }
+        });
+
     }
 }

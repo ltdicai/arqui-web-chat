@@ -61,6 +61,7 @@ public class LoginPresenter {
                         @Override
                         public void onSuccess(Void result) {
                             Cookies.setCookie("UserID", idUser);
+                            goMenuPage();
                         }
                     };
                     userDataServiceAsync.insert(user, callback);
@@ -69,13 +70,13 @@ public class LoginPresenter {
             }
 
             public void onSuccess(User user) {
-
                 Cookies.setCookie("UserID", idUser);
+                goMenuPage();
             }
         };
 
         userDataServiceAsync.get(idUser, callback);
-        goMenuPage();
+
     }
 
     private void goMenuPage(){

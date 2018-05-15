@@ -8,6 +8,7 @@ import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
@@ -30,6 +31,7 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
     private FlexTable allUsersTable;
 
     private MenuPresenter presenter;
+    private Timer timer;
 
     public MenuView(){
         container = new AbsolutePanel();
@@ -80,32 +82,9 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
         FlowPanel sendActions = new FlowPanel();
         sendActions.setStyleName("send-actions");
 
-
-
         subContainerUser = new HorizontalPanel();
         subConteinerButtons = new HorizontalPanel();
         subConteinerChats = chatColumn;
-
-        //userNameLabel = new Label();
-        //logout = new Button("Logout");
-
-        //subContainerUser.add(userNameLabel);
-        //subContainerUser.add(logout);
-
-
-
-
-
-        //subConteinerButtons.add(globalConversation);
-        //subConteinerButtons.add(privateComversation);
-        //subConteinerButtons.add(groups);
-
-        //subConteinerChats.add(globalConversation);
-
-        //container.add(subContainerUser);
-        //container.add(subConteinerButtons);
-        //container.add(subConteinerChats);
-        //container.add(allUsersTable);
 
         logout.addClickHandler(new ClickHandler(){
             @Override
@@ -124,6 +103,18 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
                 }
             }
         });
+
+
+        // Update user list
+        timer = new Timer() {
+            @Override
+            public void run() {
+                if (presenter != null) {
+                    presenter.updateUserList();
+                }
+            }
+        };
+        timer.scheduleRepeating(200);
 
     }
 
@@ -185,6 +176,11 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
             allUsersTable.setWidget(idx, 2, openPrivateConversation);
 
         }
+    }
+
+    @Override
+    public void doLogout() {
+        timer.cancel();
     }
 
     @Override
