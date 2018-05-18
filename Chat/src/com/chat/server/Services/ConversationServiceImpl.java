@@ -39,14 +39,14 @@ public class ConversationServiceImpl extends RemoteServiceServlet implements Con
     }
 
     @Override
-    public PrivateConversation getPrivateConversation(Integer conversationId) throws Exception {
-        return db.getPrivateConversation(conversationId);
+    public PrivateConversation getPrivateConversation(Integer conversationId, int lastmessagenumber) throws Exception {
+        return db.getPrivateConversation(conversationId, lastmessagenumber);
     }
 
     @Override
     public void addMessage(Conversation conversation, Message message) {
         try{
-            db.addMessage(message);
+            db.addMessage(conversation, message);
         }
         catch (SQLException ex){
             // TODO: Handle exceptions
@@ -54,9 +54,9 @@ public class ConversationServiceImpl extends RemoteServiceServlet implements Con
     }
 
     @Override
-    public PrivateConversation getPrivateConversationBetween(User loggedUser, User inviteUser) {
+    public PrivateConversation getPrivateConversationBetween(User loggedUser, User inviteUser, int lastnumber) {
         try {
-            return db.getPrivateConversationBetween(loggedUser, inviteUser);
+            return db.getPrivateConversationBetween(loggedUser, inviteUser, lastnumber);
         } catch (ConversationNotFoundException exc) {
             return createPrivateConversation(loggedUser, inviteUser);
         } catch (Exception exc) {

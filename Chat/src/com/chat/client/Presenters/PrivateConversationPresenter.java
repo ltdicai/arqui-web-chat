@@ -71,7 +71,7 @@ public class PrivateConversationPresenter {
             }
         };
 
-        rpcService.getPrivateConversationBetween(loggedUser, inviteUser, callback);
+        //rpcService.getPrivateConversationBetween(loggedUser, inviteUser, callback);
 
         //rpcService.getPrivateConversation(conversationId, callback);
     }
@@ -169,7 +169,7 @@ public class PrivateConversationPresenter {
             }
         };
 
-        rpcService.getPrivateConversation(conversation.getId(), callback);
+        //rpcService.getPrivateConversation(conversation.getId(), callback);
 
     }
 

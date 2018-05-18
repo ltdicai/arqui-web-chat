@@ -1,8 +1,6 @@
 package com.chat.server.Services.DatabaseProcedures;
 
-import com.chat.client.Models.Message;
-import com.chat.client.Models.PrivateConversation;
-import com.chat.client.Models.User;
+import com.chat.client.Models.*;
 import com.chat.client.errors.ConversationNotFoundException;
 import com.chat.client.errors.UserNotFoundException;
 import com.chat.server.Services.ConnectionManager;
@@ -24,10 +22,10 @@ public class ConversationDatabaseProcedures {
         messageDataBaseProcedures = new MessageDataBaseProcedures();
     }
 
-    public PrivateConversation getPrivateConversation(Integer conversationId) throws SQLException, ConversationNotFoundException, UserNotFoundException{
-        String query = "SELECT privateconversationid, hostuserid, inviteuserid "
+    public PrivateConversation getPrivateConversation(Integer conversationId, int lastnumber) throws SQLException, ConversationNotFoundException, UserNotFoundException{
+        String query = "SELECT *"
                 + "FROM gwtdbschema.privateconversations "
-                + "WHERE privateconversationid = ? LIMIT 1";
+                + "WHERE conversationid = ? LIMIT 1";
 
         PreparedStatement preparedStatement = connection.prepareCall(query);
         preparedStatement.setInt(1, conversationId);
@@ -41,13 +39,26 @@ public class ConversationDatabaseProcedures {
         );
         conversation.setId(conversationId);
 
-        for (Message message: messageDataBaseProcedures.get(conversationId, 0)) {
+        for (Message message: messageDataBaseProcedures.get(conversationId, lastnumber)) {
             conversation.addMessage(message);
         }
         return conversation;
     }
 
-    public void addMessage(Message message) throws SQLException {
+    public void addMessage(Conversation conversation, Message message) throws SQLException {
+        if(message.getClass() == TextMessage.class){
+            TextMessageDatabaseProcedures textMessageDatabaseProcedures = new TextMessageDatabaseProcedures();
+            textMessageDatabaseProcedures.insert((TextMessage) message, conversation.getId());
+        }
+        else if(message.getClass() == ImageMessage.class){
+            ImageMessageDatabaseProcedures imageMessageDatabaseProcedures = new ImageMessageDatabaseProcedures();
+            imageMessageDatabaseProcedures.insert((ImageMessage) message, conversation.getId());
+        }
+        else if(message.getClass() == AudioMessage.class){
+            AudioMessageDatabaseProcedures audioMessageDatabaseProcedures = new AudioMessageDatabaseProcedures();
+            audioMessageDatabaseProcedures.insert((AudioMessage) message, conversation.getId());
+        }
+
     }
 
 
@@ -73,9 +84,9 @@ public class ConversationDatabaseProcedures {
         preparedStatement.execute();
     }
 
-    public PrivateConversation getPrivateConversationBetween(User loggedUser, User inviteUser)
+    public PrivateConversation getPrivateConversationBetween(User loggedUser, User inviteUser, int lastnumber)
             throws SQLException, ConversationNotFoundException, UserNotFoundException {
-        String query = "SELECT conversationid, hostuserid, inviteuserid "
+        String query = "SELECT * "
                 + "FROM gwtdbschema.privateconversations "
                 + "WHERE hostuserid = ? AND inviteuserid = ? "
                 + "OR hostuserid = ? AND inviteuserid = ?";
@@ -91,7 +102,7 @@ public class ConversationDatabaseProcedures {
         }
         PrivateConversation result = new PrivateConversation(loggedUser, inviteUser);
         result.setId(resultSet.getInt("conversationid"));
-        for (Message message: messageDataBaseProcedures.get(result.getId(), 0)) {
+        for (Message message: messageDataBaseProcedures.get(result.getId(), lastnumber)) {
             result.addMessage(message);
         }
         return result;

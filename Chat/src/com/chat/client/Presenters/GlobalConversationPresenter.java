@@ -16,6 +16,7 @@ public class GlobalConversationPresenter implements ConversationPresenter.Specif
     private ConversationPresenter conversationPresenter;
     private Timer timer;
 
+
     public GlobalConversationPresenter(ConversationPresenter.Display view, User user) {
         conversationPresenter = new ConversationPresenter(view, user);
         this.timer = new Timer() {

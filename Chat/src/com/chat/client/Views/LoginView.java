@@ -14,8 +14,10 @@ public class LoginView extends Composite implements HasWidgets, LoginPresenter.D
     VerticalPanel loginContainer;
     FlowPanel loginBox;
     TextBox userId;
+    PasswordTextBox passwordTextBox;
     Button loginButton;
     LoginPresenter presenter;
+    Label error;
 
     public LoginView(){
         container = new FlowPanel();
@@ -32,10 +34,14 @@ public class LoginView extends Composite implements HasWidgets, LoginPresenter.D
 
         loginButton = new Button("Login");
         userId = new TextBox();
+        passwordTextBox = new PasswordTextBox();
+        error = new Label();
 
         loginContainer.add(loginInfo);
         loginContainer.add(userId);
+        loginContainer.add(passwordTextBox);
         loginContainer.add(loginButton);
+        loginContainer.add(error);
 
         loginBox.add(loginContainer);
 
@@ -47,10 +53,15 @@ public class LoginView extends Composite implements HasWidgets, LoginPresenter.D
             @Override
             public void onClick(ClickEvent event) {
                 if(presenter != null){
-                    presenter.Login(userId.getText());
+                    presenter.Login(userId.getText(), passwordTextBox.getText());
                 }
             }
         });
+    }
+
+    @Override
+    public void setError(String error){
+        this.error.setText(error);
     }
 
     @Override

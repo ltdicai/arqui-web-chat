@@ -1,6 +1,8 @@
 package com.chat.server.Services.DatabaseProcedures;
 
 import com.chat.client.Models.User;
+import com.chat.client.errors.UserInvalidIDOrPassword;
+import com.chat.client.errors.UserInvalidPassword;
 import com.chat.client.errors.UserNotFoundException;
 import com.chat.server.Services.ConnectionManager;
 
@@ -16,15 +18,16 @@ public class UserDatabaseProcedures {
         connection = ConnectionManager.getConnection();
     }
 
-    public void insert(User user) throws SQLException {
+    public void insert(User user, String password) throws SQLException {
 
         String insert = "INSERT INTO gwtdbschema.users"
-                    + "(userid) VALUES"
-                    + "(?)";
+                    + "(userid, password) VALUES"
+                    + "(?, ?)";
 
         PreparedStatement preparedStatement;
         preparedStatement = connection.prepareCall(insert);
         preparedStatement.setString(1, user.getUserID());
+        preparedStatement.setString(2, password);
         preparedStatement.execute();
     }
 
@@ -57,5 +60,29 @@ public class UserDatabaseProcedures {
             results.add(user);
         }
         return results;
+    }
+
+    public User login(String userID, String password) throws SQLException, UserInvalidPassword, UserNotFoundException, UserInvalidIDOrPassword
+    {
+        if(userID.length() < 6 && password.length() < 6){
+            throw new UserInvalidIDOrPassword();
+        }
+        String get = "select * from gwtdbschema.users where userid = ? and password = ?";
+
+        PreparedStatement preparedStatement;
+        preparedStatement = connection.prepareCall(get);
+        preparedStatement.setString(1, userID);
+        preparedStatement.setString(2, password);
+        preparedStatement.execute();
+        ResultSet resultSet = preparedStatement.getResultSet();
+        if(!resultSet.next()){
+            get(userID);
+            throw new UserInvalidPassword();
+        }
+
+        User users = new User(resultSet.getString("userid"));
+
+        return users;
+
     }
 }

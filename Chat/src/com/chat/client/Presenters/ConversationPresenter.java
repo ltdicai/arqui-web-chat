@@ -34,23 +34,28 @@ public class ConversationPresenter {
         void setError(String error);
     }
 
-public interface SpecificConversation{
-    void sendTextMessage(String messageText);
-}
+    public interface SpecificConversation{
+        void sendTextMessage(String messageText);
+    }
 
     private int messageCount;
     final ConversationPresenter.Display view;
     private User user;
-    private boolean isUpdating;
     private SpecificConversation specificConversation;
+
+    private int conversationid;
 
     public ConversationPresenter(ConversationPresenter.Display view, User user) {
         this.view = view;
         this.user = user;
 
         messageCount = 0;
-        isUpdating = false;
 
+        //this.conversationid = conversationid;
+    }
+
+    public int getIdConversation(){
+        return this.conversationid;
     }
 
     public void setSpecificConversation(SpecificConversation specificConversation){

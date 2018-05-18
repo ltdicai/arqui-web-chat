@@ -4,6 +4,8 @@ import com.chat.client.Models.User;
 import com.chat.client.Services.UserDataService;
 import com.chat.client.Services.UserDataServiceAsync;
 import com.chat.client.Views.MenuView;
+import com.chat.client.errors.UserInvalidIDOrPassword;
+import com.chat.client.errors.UserInvalidPassword;
 import com.chat.client.errors.UserNotFoundException;
 import com.chat.client.Views.LoginView;
 import com.google.gwt.core.client.GWT;
@@ -20,6 +22,7 @@ public class LoginPresenter {
         Widget asWidget();
         LoginView getViewInstance();
         void setPresenter(LoginPresenter presenter);
+        void setError(String error);
     }
 
     final Display view;
@@ -43,7 +46,7 @@ public class LoginPresenter {
         return view;
     }
 
-    public void Login(String idUser){
+    public void Login(String idUser, String password){
         User user = new User(idUser);
 
         UserDataServiceAsync userDataServiceAsync = GWT.create(UserDataService.class);
@@ -52,6 +55,12 @@ public class LoginPresenter {
             public void onFailure(Throwable caught) {
                 // TODO: Do something with errors.
 
+                if (caught.getClass().equals(UserInvalidIDOrPassword.class)){
+                    getView().setError("El usuario y la contraseña deben tener, al menos, 6 caracteres.");
+                }
+                if (caught.getClass().equals(UserInvalidPassword.class)){
+                    getView().setError("La contraseña es incorrecta.");
+                }
                 if (caught.getClass().equals(UserNotFoundException.class)){
                     AsyncCallback<Void> callback = new AsyncCallback<Void>() {
                         @Override
@@ -64,7 +73,7 @@ public class LoginPresenter {
                             goMenuPage();
                         }
                     };
-                    userDataServiceAsync.insert(user, callback);
+                    userDataServiceAsync.insert(user, password, callback);
 
                 }
             }
@@ -75,7 +84,7 @@ public class LoginPresenter {
             }
         };
 
-        userDataServiceAsync.get(idUser, callback);
+        userDataServiceAsync.login(idUser, password, callback);
 
     }
 

@@ -86,9 +86,11 @@ public class MenuPresenter {
     }
 
     public void goToPrivateConversation(User user){
-        PrivateConversationPresenter presenter = new PrivateConversationPresenter(
+        /*PrivateConversationPresenter presenter = new PrivateConversationPresenter(
                 new PrivateConversationView(), loggedUser, user);
-        presenter.go(getView().getSubContainerChat());
+        presenter.go(getView().getSubContainerChat());*/
+        PrivateConversationPresenterCopia priv = new PrivateConversationPresenterCopia(new ConversationView(), loggedUser, user);
+        priv.go(getView().getSubContainerChat());
     }
 
     public User getLoggedUser() {

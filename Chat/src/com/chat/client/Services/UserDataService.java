@@ -1,6 +1,8 @@
 package com.chat.client.Services;
 
 import com.chat.client.Models.User;
+import com.chat.client.errors.UserInvalidIDOrPassword;
+import com.chat.client.errors.UserInvalidPassword;
 import com.chat.client.errors.UserNotFoundException;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -22,9 +24,11 @@ public interface UserDataService extends RemoteService {
         }
     }
 
-    void insert(User user);
+    void insert(User user, String password);
 
     User get(String userID) throws UserNotFoundException;
 
     List<User> getAllUsers();
+
+    User login(String userID, String password) throws UserNotFoundException, UserInvalidPassword, UserInvalidIDOrPassword;
 }

@@ -1,7 +1,6 @@
 package com.chat.client.Models;
 
 public class PrivateConversation extends Conversation {
-    private Integer id;
     private User userHost;
     private User userInvite;
 
@@ -10,14 +9,6 @@ public class PrivateConversation extends Conversation {
     public PrivateConversation(User userHost, User userInvite) {
         this.userHost = userHost;
         this.userInvite = userInvite;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public User getUserHost() {

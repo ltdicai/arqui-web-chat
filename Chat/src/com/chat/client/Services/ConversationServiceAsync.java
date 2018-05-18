@@ -11,7 +11,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 public interface ConversationServiceAsync {
-    void getPrivateConversation(Integer conversationId, AsyncCallback<PrivateConversation> async);
+    void getPrivateConversation(Integer conversationId, int lastmessagenumber, AsyncCallback<PrivateConversation> async);
     void addMessage(Conversation conversation, Message message, AsyncCallback<Void> async);
-    void getPrivateConversationBetween(User loggedUser, User inviteUser, AsyncCallback<PrivateConversation> async);
+    void getPrivateConversationBetween(User loggedUser, User inviteUser,int lastnumber, AsyncCallback<PrivateConversation> async);
 }
