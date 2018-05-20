@@ -1,86 +1,90 @@
-create sequence messages_messageid_seq
-;
+create sequence messages_messageid_seq;
 
-create sequence conversations_conversationid_seq
-;
+create sequence conversations_conversationid_seq;
 
 create table users
 (
-	userid varchar(50) not null
-		constraint users_pkey
-			primary key
-)
-;
+  userid   varchar(50) not null
+    constraint users_pkey
+    primary key,
+  password text        not null
+);
 
 create table conversations
 (
-	conversationid serial not null
-		constraint conversations_pkey
-			primary key
-)
-;
+  conversationid serial not null
+    constraint conversations_pkey
+    primary key
+);
 
 create table messages
 (
-	messageid serial not null
-		constraint messages_pkey
-			primary key,
-	userid varchar(50) not null
-		constraint messages_userid_fkey
-			references users,
-	conversationid integer not null
-		constraint messages_conversationid_fkey
-			references conversations
-)
-;
+  messageid      serial      not null
+    constraint messages_pkey
+    primary key,
+  userid         varchar(50) not null
+    constraint messages_userid_fkey
+    references users,
+  conversationid integer     not null
+    constraint messages_conversationid_fkey
+    references conversations
+);
 
 create table textmessages
 (
-	messageid integer not null
-		constraint textmessages_pkey
-			primary key
-		constraint textmessages_messageid_fkey
-			references messages,
-	message text not null
-)
-;
+  messageid integer not null
+    constraint textmessages_pkey
+    primary key
+    constraint textmessages_messageid_fkey
+    references messages,
+  message   text    not null
+);
 
 create table globalconversations
 (
-	conversationid integer not null
-		constraint globalconversations_pkey
-			primary key
-		constraint globalconversations_conversationid_fkey
-			references conversations
-)
-;
+  conversationid integer not null
+    constraint globalconversations_pkey
+    primary key
+    constraint globalconversations_conversationid_fkey
+    references conversations
+);
 
 create table audiomessages
 (
-	messageid integer not null
-		constraint audiomessage_pkey
-			primary key
-		constraint messageid___fk
-			references messages,
-	message text not null
-)
-;
+  messageid integer not null
+    constraint audiomessage_pkey
+    primary key
+    constraint messageid___fk
+    references messages,
+  message   text    not null
+);
 
 create unique index audiomessage_messageid_uindex
-	on audiomessages (messageid)
-;
+  on audiomessages (messageid);
 
 create table imagemessages
 (
-	messageid integer not null
-		constraint imagemessages_messages_messageid_fk
-			references messages,
-	message text not null
-)
-;
+  messageid integer not null
+    constraint imagemessages_messages_messageid_fk
+    references messages,
+  message   text    not null
+);
 
 create unique index imagemessages_messageid_uindex
-	on imagemessages (messageid)
-;
+  on imagemessages (messageid);
+
+create table privateconversations
+(
+  conversationid integer     not null
+    constraint privateconversation_pkey
+    primary key
+    constraint privateconversation_conversations_conversationid_fk
+    references conversations,
+  hostuserid     varchar(50) not null,
+  inviteuserid   varchar(50)
+);
+
+create unique index privateconversation_conversationid_uindex
+  on privateconversations (conversationid);
 
 

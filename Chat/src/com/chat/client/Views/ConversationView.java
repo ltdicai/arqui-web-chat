@@ -55,7 +55,6 @@ public class ConversationView extends Composite implements HasWidgets, Conversat
         });
         fileUpload.setName("fileuploadchat");
         fileUploadPanel.add(fileUpload);
-        fileUploadPanel.setAction(GWT.getModuleBaseURL() + "fileupload?userid=" + Cookies.getCookie("UserID") + "&conversationid=" + 1);
 
         newFile.addClickHandler(new ClickHandler(){
             @Override
@@ -87,6 +86,11 @@ public class ConversationView extends Composite implements HasWidgets, Conversat
 
     }
 
+    private void setAction(){
+        fileUploadPanel.setAction(GWT.getModuleBaseURL() + "fileupload?userid=" + Cookies.getCookie("UserID") +
+               "&conversationid=" + presenter.getIdConversation());
+    }
+
     @Override
     public void setError(String error){
         this.error.setText(error);
@@ -95,6 +99,7 @@ public class ConversationView extends Composite implements HasWidgets, Conversat
     @Override
     public void setPresenter(ConversationPresenter presenter){
         this.presenter = presenter;
+        setAction();
     }
 
     @Override
@@ -115,11 +120,6 @@ public class ConversationView extends Composite implements HasWidgets, Conversat
     @Override
     public void clear() {
         container.clear();
-    }
-
-    @Override
-    public void clearText() {
-        message.setText("");
     }
 
     @Override

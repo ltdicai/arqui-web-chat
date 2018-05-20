@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.*;
 
 import java.util.List;
 
-public class PrivateConversationPresenterCopia implements ConversationPresenter.SpecificConversation {
+public class PrivateConversationPresenterCopia implements ConversationPresenter.SpecificConversationPresenter {
 
     private ConversationPresenter conversationPresenter;
     private Timer timer;
@@ -21,11 +21,17 @@ public class PrivateConversationPresenterCopia implements ConversationPresenter.
     private User inviteUser;
     private ConversationServiceAsync rpcService = GWT.create(ConversationService.class);
 
-    public PrivateConversationPresenterCopia(ConversationPresenter.Display view, User hostuser, User inviteuser) {
-
-        this.conversation = null;
+    public PrivateConversationPresenterCopia(ConversationPresenter.Display view, User hostuser, User inviteuser, PrivateConversation privateConversation) {
+        this.conversation = privateConversation;
+        this.conversationPresenter = new ConversationPresenter(view, hostuser, privateConversation);
         this.loggedUser = hostuser;
         this.inviteUser = inviteuser;
+
+    }
+
+    public void go(final HasWidgets container) {
+        conversationPresenter.setSpecificConversation(this);
+        conversationPresenter.go(container);
         this.timer = new Timer() {
             @Override
             public void run() {
@@ -34,32 +40,6 @@ public class PrivateConversationPresenterCopia implements ConversationPresenter.
             }
         };
         this.timer.scheduleRepeating(500);
-        AsyncCallback<PrivateConversation> callback = new AsyncCallback<PrivateConversation>() {
-            public void onFailure(Throwable caught) {
-                Window.alert(caught.getMessage());
-                // TODO: Do something with errors.
-            }
-
-            public void onSuccess(PrivateConversation conv) {
-                if (conv == null) {
-                    Window.alert("Conv is null!");
-                    return;
-                }
-                Window.alert(conv.getId().toString());
-                conversation = conv;
-
-                conversationPresenter = new ConversationPresenter(view, hostuser);
-            }
-        };
-
-        rpcService.getPrivateConversationBetween(loggedUser, inviteUser,0, callback);
-
-
-    }
-
-    public void go(final HasWidgets container) {
-        conversationPresenter.go(container);
-        conversationPresenter.setSpecificConversation(this);
     }
 
     public void updateMessage() {
@@ -90,8 +70,8 @@ public class PrivateConversationPresenterCopia implements ConversationPresenter.
 
 
     public void sendTextMessage(String messageText) {
-        String userid = Cookies.getCookie("UserID");
-        User user = new User(userid);
+        timer.cancel();
+        User user = conversationPresenter.getUser();
         TextMessage newMessage = new TextMessage(user, messageText);
 
         AsyncCallback<Void> callback = new AsyncCallback<Void>() {

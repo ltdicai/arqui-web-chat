@@ -11,27 +11,27 @@ import com.google.gwt.user.client.ui.*;
 
 import java.util.List;
 
-public class GlobalConversationPresenter implements ConversationPresenter.SpecificConversation {
+public class GlobalConversationPresenter implements ConversationPresenter.SpecificConversationPresenter {
 
     private ConversationPresenter conversationPresenter;
     private Timer timer;
 
 
-    public GlobalConversationPresenter(ConversationPresenter.Display view, User user) {
-        conversationPresenter = new ConversationPresenter(view, user);
-        this.timer = new Timer() {
-            @Override
-            public void run() {
-                cancel();
-                updateMessage();
-            }
-        };
-        this.timer.scheduleRepeating(500);
+    public GlobalConversationPresenter(ConversationPresenter.Display view, User user, GlobalConversation conversation) {
+        conversationPresenter = new ConversationPresenter(view, user, conversation);
     }
 
     public void go(final HasWidgets container) {
-        conversationPresenter.go(container);
         conversationPresenter.setSpecificConversation(this);
+        conversationPresenter.go(container);
+        timer = new Timer() {
+            @Override
+            public void run() {
+                timer.cancel();
+                updateMessage();
+            }
+        };
+        timer.scheduleRepeating(500);
     }
 
     public void updateMessage() {
@@ -62,8 +62,8 @@ public class GlobalConversationPresenter implements ConversationPresenter.Specif
 
 
     public void sendTextMessage(String messageText) {
-        String userid = Cookies.getCookie("UserID");
-        User user = new User(userid);
+        timer.cancel();
+        User user = conversationPresenter.getUser();
         TextMessage newMessage = new TextMessage(user, messageText);
 
         AsyncCallback<Void> callback = new AsyncCallback<Void>() {

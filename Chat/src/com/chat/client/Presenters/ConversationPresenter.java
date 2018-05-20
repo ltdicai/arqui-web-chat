@@ -15,8 +15,6 @@ public class ConversationPresenter {
 
         ConversationView getViewInstance();
 
-        void clearText();
-
         void clearFiles();
 
         void setVisibleFileUploadPanel(boolean visibility);
@@ -34,32 +32,34 @@ public class ConversationPresenter {
         void setError(String error);
     }
 
-    public interface SpecificConversation{
+    public interface SpecificConversationPresenter{
         void sendTextMessage(String messageText);
     }
 
     private int messageCount;
     final ConversationPresenter.Display view;
     private User user;
-    private SpecificConversation specificConversation;
+    private SpecificConversationPresenter specificConversationPresenter;
 
-    private int conversationid;
+    private Conversation conversation;
 
-    public ConversationPresenter(ConversationPresenter.Display view, User user) {
+    public ConversationPresenter(ConversationPresenter.Display view, User user, Conversation conversation) {
         this.view = view;
         this.user = user;
-
+        this.conversation = conversation;
         messageCount = 0;
+    }
 
-        //this.conversationid = conversationid;
+    public User getUser(){
+        return user;
     }
 
     public int getIdConversation(){
-        return this.conversationid;
+        return this.conversation.getId();
     }
 
-    public void setSpecificConversation(SpecificConversation specificConversation){
-        this.specificConversation = specificConversation;
+    public void setSpecificConversation(SpecificConversationPresenter specificConversation){
+        this.specificConversationPresenter = specificConversation;
     }
 
     public void bind() {
@@ -73,7 +73,7 @@ public class ConversationPresenter {
     }
 
     public void sendTextMessage(String messageText){
-        specificConversation.sendTextMessage(messageText);
+        specificConversationPresenter.sendTextMessage(messageText);
     }
 
     public Display getView() {

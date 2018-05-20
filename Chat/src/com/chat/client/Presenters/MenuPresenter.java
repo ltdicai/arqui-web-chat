@@ -1,14 +1,15 @@
 package com.chat.client.Presenters;
 
+import com.chat.client.Models.GlobalConversation;
+import com.chat.client.Models.Message;
+import com.chat.client.Models.PrivateConversation;
 import com.chat.client.Models.User;
-import com.chat.client.Services.ConversationService;
-import com.chat.client.Services.ConversationServiceAsync;
-import com.chat.client.Services.UserDataService;
-import com.chat.client.Services.UserDataServiceAsync;
+import com.chat.client.Services.*;
 import com.chat.client.Views.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
@@ -81,16 +82,46 @@ public class MenuPresenter {
     }
 
     public void goToGlobalConversation(){
-        GlobalConversationPresenter globalConversationPresenter = new GlobalConversationPresenter(new ConversationView(), loggedUser);
-        globalConversationPresenter.go(getView().getSubContainerChat());
+
+        ConversationView conversationView = new ConversationView();
+
+        AsyncCallback<GlobalConversation> callback = new AsyncCallback<GlobalConversation>() {
+            public void onFailure(Throwable caught) {
+                // TODO: Do something with errors.
+            }
+
+            public void onSuccess(GlobalConversation globalConversation) {
+                GlobalConversationPresenter globalConversationPresenter =
+                        new GlobalConversationPresenter(conversationView, loggedUser, globalConversation);
+                globalConversationPresenter.go(getView().getSubContainerChat());
+            }
+        };
+
+        GlobalConversationDataServiceAsync globalConversationDataServiceAsync = GWT.create(GlobalConversationDataService.class);
+
+        globalConversationDataServiceAsync.get(0, callback);
+
     }
 
     public void goToPrivateConversation(User user){
-        /*PrivateConversationPresenter presenter = new PrivateConversationPresenter(
-                new PrivateConversationView(), loggedUser, user);
-        presenter.go(getView().getSubContainerChat());*/
-        PrivateConversationPresenterCopia priv = new PrivateConversationPresenterCopia(new ConversationView(), loggedUser, user);
-        priv.go(getView().getSubContainerChat());
+        AsyncCallback<PrivateConversation> callback = new AsyncCallback<PrivateConversation>() {
+            public void onFailure(Throwable caught) {
+                // TODO: Do something with errors.
+            }
+
+            public void onSuccess(PrivateConversation privateConversation) {
+
+                PrivateConversationPresenterCopia priv =
+                        new PrivateConversationPresenterCopia(new ConversationView(), loggedUser, user, privateConversation);
+                priv.go(getView().getSubContainerChat());
+            }
+        };
+
+        ConversationServiceAsync conversationServiceAsync = GWT.create(ConversationService.class);
+
+        conversationServiceAsync.getPrivateConversationBetween(loggedUser, user,
+                0,  callback);
+
     }
 
     public User getLoggedUser() {

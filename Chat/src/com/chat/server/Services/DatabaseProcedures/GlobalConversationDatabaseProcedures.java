@@ -23,9 +23,18 @@ public class GlobalConversationDatabaseProcedures {
     public GlobalConversation get(int lastmessagenumber) throws SQLException, UserNotFoundException {
 
         GlobalConversation globalConversation = new GlobalConversation();
+        String query = "SELECT *"
+                + "FROM gwtdbschema.globalconversations "
+                + "LIMIT 1";
+
+        PreparedStatement preparedStatement = connection.prepareCall(query);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()){
+            globalConversation.setId(resultSet.getInt("conversationid"));
+        }
 
         MessageDataBaseProcedures messageDatabaseProcedures = new MessageDataBaseProcedures();
-        List<Message> messages = messageDatabaseProcedures.get(1, lastmessagenumber);
+        List<Message> messages = messageDatabaseProcedures.get(globalConversation.getId(), lastmessagenumber);
         Iterator<Message> iterTextMessages = messages.iterator();
         while (iterTextMessages.hasNext()){
            globalConversation.addMessage(iterTextMessages.next());
