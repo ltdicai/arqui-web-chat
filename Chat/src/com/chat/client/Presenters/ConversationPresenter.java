@@ -92,22 +92,22 @@ public class ConversationPresenter {
                 if (item.getUser().getUserID() == Cookies.getCookie("UserID")) {
                     getView().newTextMessageForMe(messageText.getMessage());
                 } else {
-                    getView().newTextMessageForOthers(messageText.getMessage(), user.getUserID());
+                    getView().newTextMessageForOthers(messageText.getMessage(), messageText.getUser().getUserID());
                 }
 
             } else if (item.getClass() == ImageMessage.class) {
-                ImageMessage messageText = (ImageMessage) item;
+                ImageMessage messageImage = (ImageMessage) item;
                 if (item.getUser().getUserID() == Cookies.getCookie("UserID")) {
-                    getView().newImageMessageForMe(messageText.getImage());
+                    getView().newImageMessageForMe(messageImage.getImage());
                 } else {
-                    getView().newImageMessageForOthers(messageText.getImage(), user.getUserID());
+                    getView().newImageMessageForOthers(messageImage.getImage(), messageImage.getUser().getUserID());
                 }
             } else if (item.getClass() == AudioMessage.class) {
-                AudioMessage messageText = (AudioMessage) item;
+                AudioMessage messageAudio = (AudioMessage) item;
                 if (item.getUser().getUserID() == Cookies.getCookie("UserID")) {
-                    getView().newAudioMessageForMe(messageText.getAudio());
+                    getView().newAudioMessageForMe(messageAudio.getAudio());
                 } else {
-                    getView().newAudioMessageForOthers(messageText.getAudio(), user.getUserID());
+                    getView().newAudioMessageForOthers(messageAudio.getAudio(), messageAudio.getUser().getUserID());
                 }
 
             }

@@ -1,18 +1,19 @@
 package com.chat.client.Presenters;
 
-import com.chat.client.Models.*;
+import com.chat.client.Models.Message;
+import com.chat.client.Models.PrivateConversation;
+import com.chat.client.Models.TextMessage;
+import com.chat.client.Models.User;
 import com.chat.client.Services.ConversationService;
 import com.chat.client.Services.ConversationServiceAsync;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.HasWidgets;
 
 import java.util.List;
 
-public class PrivateConversationPresenterCopia implements ConversationPresenter.SpecificConversationPresenter {
+public class PrivateConversationPresenter implements ConversationPresenter.SpecificConversationPresenter {
 
     private ConversationPresenter conversationPresenter;
     private Timer timer;
@@ -21,7 +22,7 @@ public class PrivateConversationPresenterCopia implements ConversationPresenter.
     private User inviteUser;
     private ConversationServiceAsync rpcService = GWT.create(ConversationService.class);
 
-    public PrivateConversationPresenterCopia(ConversationPresenter.Display view, User hostuser, User inviteuser, PrivateConversation privateConversation) {
+    public PrivateConversationPresenter(ConversationPresenter.Display view, User hostuser, User inviteuser, PrivateConversation privateConversation) {
         this.conversation = privateConversation;
         this.conversationPresenter = new ConversationPresenter(view, hostuser, privateConversation);
         this.loggedUser = hostuser;

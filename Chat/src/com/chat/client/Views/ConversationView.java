@@ -174,7 +174,12 @@ public class ConversationView extends Composite implements HasWidgets, Conversat
         Image newImageMessage = new Image(message);
         newImageMessage.setUrl(message);
         newImageMessage.setStyleName(style);
-        messageBox.add(newImageMessage);
+        VerticalPanel panel = new VerticalPanel();
+        Label etiquetaLabel = new Label(etiqueta + ": ");
+        panel.add(etiquetaLabel);
+        panel.add(newImageMessage);
+        messageBox.add(panel);
+        messageBox.setStyleName(style);
     }
 
     @Override
@@ -216,7 +221,12 @@ public class ConversationView extends Composite implements HasWidgets, Conversat
                 }
             }
         });
-        messageBox.add(audioMessageButton);
+        VerticalPanel panel = new VerticalPanel();
+        Label etiquetaLabel = new Label(etiqueta + ": ");
+        panel.add(etiquetaLabel);
+        panel.add(audioMessageButton);
+        messageBox.add(panel);
+        messageBox.setStyleName(style);
     }
 
 }

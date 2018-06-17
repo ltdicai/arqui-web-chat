@@ -1,9 +1,6 @@
 package com.chat.client.Presenters;
 
-import com.chat.client.Models.GlobalConversation;
-import com.chat.client.Models.Message;
-import com.chat.client.Models.PrivateConversation;
-import com.chat.client.Models.User;
+import com.chat.client.Models.*;
 import com.chat.client.Services.*;
 import com.chat.client.Views.*;
 import com.google.gwt.core.client.GWT;
@@ -111,8 +108,8 @@ public class MenuPresenter {
 
             public void onSuccess(PrivateConversation privateConversation) {
 
-                PrivateConversationPresenterCopia priv =
-                        new PrivateConversationPresenterCopia(new ConversationView(), loggedUser, user, privateConversation);
+                PrivateConversationPresenter priv =
+                        new PrivateConversationPresenter(new ConversationView(), loggedUser, user, privateConversation);
                 priv.go(getView().getSubContainerChat());
             }
         };
@@ -122,6 +119,20 @@ public class MenuPresenter {
         conversationServiceAsync.getPrivateConversationBetween(loggedUser, user,
                 0,  callback);
 
+    }
+
+    public void goToGroupAdmistration(){
+        GroupAdministrationPresenter groupConversationPresenter = new GroupAdministrationPresenter(
+                new GroupAdministrationView(), loggedUser, this);
+        groupConversationPresenter.go(getView().getSubContainerChat());
+    }
+
+    public void goToGroupConversation(GroupConversation groupConversation) {
+
+        GroupConversationPresenter groupConversationPresenter = new GroupConversationPresenter(
+                new ConversationView(), loggedUser, groupConversation);
+
+        groupConversationPresenter.go(getView().getSubContainerChat());
     }
 
     public User getLoggedUser() {

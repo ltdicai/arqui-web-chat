@@ -133,6 +133,24 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
             }
         });
 
+        groups.addClickHandler(new ClickHandler(){
+            @Override
+            public void onClick(ClickEvent event) {
+                if(presenter != null){
+                    globalConversation.setStyleName(
+                            globalConversation.getStyleName().replace("active","")
+                    );
+                    privateConversation.setStyleName(
+                            privateConversation.getStyleName().replace("active","")
+                    );
+                    groups.setStyleName(
+                            groups.getStyleName().replace("active","")
+                    );
+                    groups.setStyleName(privateConversation.getStyleName() + " active");
+                    presenter.goToGroupAdmistration();
+                }
+            }
+        });
 
         // Update user list
         timer = new Timer() {

@@ -16,6 +16,10 @@
         <servlet-name>com.chat.MainPageChat ConversationService</servlet-name>
         <servlet-class>com.chat.server.Services.ConversationServiceImpl</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>com.chat.MainPageChat GroupConversationService</servlet-name>
+        <servlet-class>com.chat.server.Services.GroupConversationServiceImpl</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>com.chat.MainPageChat ConversationService</servlet-name>
         <url-pattern>/com.chat.MainPageChat/ConversationService</url-pattern>
@@ -27,6 +31,10 @@
     <servlet-mapping>
         <servlet-name>com.chat.MainPageChat GlobalConversationDataService</servlet-name>
         <url-pattern>/com.chat.MainPageChat/GlobalConversationDataService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>com.chat.MainPageChat GroupConversationService</servlet-name>
+        <url-pattern>/com.chat.MainPageChat/GroupConversationService</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>fileUploaderServlet</servlet-name>
