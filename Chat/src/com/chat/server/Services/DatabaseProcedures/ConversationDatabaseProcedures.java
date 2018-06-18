@@ -4,6 +4,7 @@ import com.chat.client.Models.*;
 import com.chat.client.errors.ConversationNotFoundException;
 import com.chat.client.errors.UserNotFoundException;
 import com.chat.server.Services.ConnectionManager;
+import com.chat.server.Services.IntegrationService;
 
 import java.sql.*;
 
@@ -45,6 +46,11 @@ public class ConversationDatabaseProcedures {
         if(message.getClass() == TextMessage.class){
             TextMessageDatabaseProcedures textMessageDatabaseProcedures = new TextMessageDatabaseProcedures();
             textMessageDatabaseProcedures.insert((TextMessage) message, conversation.getId());
+            try {
+                IntegrationService.sendNewMessage(conversation, (TextMessage) message);
+            } catch (Exception exc) {
+                // TODO
+            }
         }
         else if(message.getClass() == ImageMessage.class){
             ImageMessageDatabaseProcedures imageMessageDatabaseProcedures = new ImageMessageDatabaseProcedures();
@@ -58,9 +64,14 @@ public class ConversationDatabaseProcedures {
     }
 
 
-    public PrivateConversation insert(User host, User invite) throws SQLException {
+    public PrivateConversation insert(User host, User invite, String customRoomId) throws SQLException {
         // Create entry on main conversations table
-        String conversationName = host.getUserID() + "_" + invite.getUserID();
+        String conversationName;
+        if (customRoomId != null) {
+            conversationName = customRoomId;
+        } else{
+            conversationName = host.getUserID() + "&" + invite.getUserID();
+        }
 
         PrivateConversation conversation = new PrivateConversation(host, invite);
         String insert = "INSERT INTO gwtdbschema.conversations " +

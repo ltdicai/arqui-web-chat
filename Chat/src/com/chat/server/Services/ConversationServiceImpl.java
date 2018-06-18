@@ -28,8 +28,11 @@ public class ConversationServiceImpl extends RemoteServiceServlet implements Con
 
     public PrivateConversation createPrivateConversation(User hostUser, User inviteUser) {
         try {
-            PrivateConversation conversation =  db.insert(hostUser, inviteUser);
-            IntegrationService.sendNewRoom(conversation);
+            PrivateConversation conversation =  db.insert(hostUser, inviteUser, null);
+            String appName = IntegrationService.getAppName();
+            if (!appName.equals(IntegrationService.getPlatformNameForUser(hostUser)) || !appName.equals(IntegrationService.getPlatformNameForUser(inviteUser))) {
+                IntegrationService.sendNewRoom(conversation);
+            }
             return conversation;
         } catch (Exception exc) {
             // TODO: Handle exceptions

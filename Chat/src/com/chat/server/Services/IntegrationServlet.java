@@ -60,6 +60,11 @@ public class IntegrationServlet extends HttpServlet {
                     JsonNode json = mapper.readTree(request.getReader());
                     handleNewRoom(json, response);
                 }
+                else if (requestURI.endsWith("/message")) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonNode json = mapper.readTree(request.getReader());
+                    handleNewMessage(json, response);
+                }
                 else {
                     markAsError(response, "Don't understand '" + requestURI + "'");
                 }

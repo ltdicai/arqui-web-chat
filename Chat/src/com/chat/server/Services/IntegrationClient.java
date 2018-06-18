@@ -50,6 +50,16 @@ public class IntegrationClient {
         System.out.println(response.readEntity(String.class));
     }
 
+    public static void newMessage(String data) {
+        ClientConfig config = new ClientConfig();
+        Client client = ClientBuilder.newClient((Configuration) config);
+        WebTarget target = client.target(getEndpoint()).path("message");
+        Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON_TYPE);
+        Response response = invocationBuilder.post(Entity.entity(data, MediaType.APPLICATION_JSON_TYPE));
+        System.out.println(response.getStatus());
+        System.out.println(response.readEntity(String.class));
+    }
+
 
 
 }

@@ -14,8 +14,7 @@ create table gwtdbschema.conversations
 (
   conversationid varchar(50) not null
     constraint conversations_pkey
-    primary key,
-  externalid varchar(50) not null
+    primary key
 );
 
 create table gwtdbschema.messages
