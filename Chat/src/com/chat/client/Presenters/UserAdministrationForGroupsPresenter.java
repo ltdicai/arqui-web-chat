@@ -16,7 +16,7 @@ public class UserAdministrationForGroupsPresenter {
 
     public interface Display {
         void setPresenter(UserAdministrationForGroupsPresenter presenter);
-        void showUsers(List<User> groups);
+        void showUsers(List<User> users);
 
         Widget asWidget();
 

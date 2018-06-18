@@ -1,13 +1,15 @@
 package com.chat.client.Presenters;
 
-import com.chat.client.Models.*;
+import com.chat.client.Models.GlobalConversation;
+import com.chat.client.Models.Message;
+import com.chat.client.Models.TextMessage;
+import com.chat.client.Models.User;
 import com.chat.client.Services.GlobalConversationDataService;
 import com.chat.client.Services.GlobalConversationDataServiceAsync;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.HasWidgets;
 
 import java.util.List;
 

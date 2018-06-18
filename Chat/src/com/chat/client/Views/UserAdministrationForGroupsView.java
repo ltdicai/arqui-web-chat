@@ -4,7 +4,6 @@ import com.chat.client.Models.User;
 import com.chat.client.Presenters.UserAdministrationForGroupsPresenter;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
 import java.util.Iterator;
@@ -21,7 +20,6 @@ public class UserAdministrationForGroupsView extends Composite implements HasWid
     public UserAdministrationForGroupsView(){
         container = new AbsolutePanel();
         mainContainer = new FlowPanel();
-        mainContainer.setStyleName("menu-view");
 
         allUsersTable = new FlexTable();
 

@@ -3,11 +3,10 @@ package com.chat.client.Presenters;
 import com.chat.client.Models.*;
 import com.chat.client.Views.ConversationView;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Widget;
 
 import java.util.List;
-import java.util.Stack;
 
 public class ConversationPresenter {
     public interface Display {
@@ -30,6 +29,7 @@ public class ConversationPresenter {
         void newAudioMessageForOthers(String message, String etiqueta);
 
         void setError(String error);
+        void setTitle(String title);
     }
 
     public interface SpecificConversationPresenter{
@@ -70,6 +70,30 @@ public class ConversationPresenter {
         bind();
         container.clear();
         container.add(view.getViewInstance().asWidget());
+        setTitle();
+    }
+
+    private void setTitle(){
+        if (conversation.getClass() == GlobalConversation.class) {
+
+            GlobalConversation globalConversation = (GlobalConversation) conversation;
+            view.setTitle("Chat global");
+
+        } else if (conversation.getClass() == PrivateConversation.class) {
+
+            PrivateConversation privateConversation = (PrivateConversation) conversation;
+            if(privateConversation.getUserHost().getUserID() == user.getUserID()){
+                view.setTitle(privateConversation.getUserInvite().getUserID());
+            }else{
+                view.setTitle(privateConversation.getUserHost().getUserID());
+            }
+
+        } else if (conversation.getClass() == GroupConversation.class) {
+
+            GroupConversation groupConversation = (GroupConversation) conversation;
+            view.setTitle(groupConversation.getName());
+
+        }
     }
 
     public void sendTextMessage(String messageText){

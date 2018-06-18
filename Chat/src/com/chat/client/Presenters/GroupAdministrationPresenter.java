@@ -4,11 +4,9 @@ import com.chat.client.Models.GroupConversation;
 import com.chat.client.Models.User;
 import com.chat.client.Services.GroupConversationService;
 import com.chat.client.Services.GroupConversationServiceAsync;
-import com.chat.client.Views.ConversationView;
 import com.chat.client.Views.GroupAdministrationView;
 import com.chat.client.Views.UserAdministrationForGroupsView;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
@@ -26,6 +24,8 @@ public class GroupAdministrationPresenter {
         GroupAdministrationView getViewInstance();
         void unableAddUser();
         HasWidgets getAddUserContainer();
+
+        void setError(String error);
     }
 
     private Display view;
@@ -90,6 +90,9 @@ public class GroupAdministrationPresenter {
 
 
     public void NewGroup(String name){
+        if(name.length() == 0){
+            view.setError("Se debe especificar un nombre para el grupo");
+        }
         AsyncCallback<GroupConversation> callback = new AsyncCallback<GroupConversation>() {
             public void onFailure(Throwable caught) {
                 // TODO: Do something with errors.
@@ -132,8 +135,6 @@ public class GroupAdministrationPresenter {
 
         conversationServiceAsync.getGroupConversation(conversationid,
                 0,  callback);
-
-
     }
 }
 

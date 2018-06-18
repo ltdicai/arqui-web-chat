@@ -1,7 +1,6 @@
 package com.chat.server.Services.DatabaseProcedures;
 
 import com.chat.client.Models.AudioMessage;
-import com.chat.client.Models.TextMessage;
 import com.chat.client.Models.User;
 import com.chat.client.errors.UserNotFoundException;
 import com.chat.server.Services.ConnectionManager;
@@ -12,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 public class AudioMessageDatabaseProcedures {
     private static Connection connection;

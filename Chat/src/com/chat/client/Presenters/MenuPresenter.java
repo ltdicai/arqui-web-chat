@@ -1,17 +1,17 @@
 package com.chat.client.Presenters;
 
-import com.chat.client.Models.*;
+import com.chat.client.Models.GlobalConversation;
+import com.chat.client.Models.GroupConversation;
+import com.chat.client.Models.PrivateConversation;
+import com.chat.client.Models.User;
 import com.chat.client.Services.*;
 import com.chat.client.Views.*;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
-
-import java.util.List;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 
 public class MenuPresenter {
@@ -20,14 +20,14 @@ public class MenuPresenter {
         Widget asWidget();
         MenuView getViewInstance();
         void setLabel(String texto);
-        void showUsers(List<User> users);
-        void doLogout();
+        //void showUsers(List<User> users);
+        //void doLogout();
         HasWidgets getSubContainerChat();
+        HasWidgets getSubContainerUser();
         void setPresenter(MenuPresenter presenter);
     }
 
     final Display view;
-    private final ConversationServiceAsync conversationService = GWT.create(ConversationService.class);
     private final UserDataServiceAsync userService = GWT.create(UserDataService.class);
     private User loggedUser;
 
@@ -48,7 +48,6 @@ public class MenuPresenter {
 
             }
         });
-
     }
 
     public void bind(){
@@ -68,10 +67,9 @@ public class MenuPresenter {
 
     public void Logout(){
         Cookies.removeCookie("UserID");
-        getView().doLogout();
+        //getView().doLogout();
         goLoginPage();
     }
-
 
     private void goLoginPage(){
         LoginPresenter mainpage = new LoginPresenter(new LoginView());
@@ -118,39 +116,27 @@ public class MenuPresenter {
 
         conversationServiceAsync.getPrivateConversationBetween(loggedUser, user,
                 0,  callback);
-
     }
 
     public void goToGroupAdmistration(){
         GroupAdministrationPresenter groupConversationPresenter = new GroupAdministrationPresenter(
                 new GroupAdministrationView(), loggedUser, this);
-        groupConversationPresenter.go(getView().getSubContainerChat());
+
+        groupConversationPresenter.go(getView().getSubContainerUser());
     }
 
     public void goToGroupConversation(GroupConversation groupConversation) {
-
         GroupConversationPresenter groupConversationPresenter = new GroupConversationPresenter(
                 new ConversationView(), loggedUser, groupConversation);
 
         groupConversationPresenter.go(getView().getSubContainerChat());
     }
 
-    public User getLoggedUser() {
-        return loggedUser;
+    public void goToPrivateAdmistration(){
+        PrivateAdministrationPresenter privateAdministrationPresenter = new PrivateAdministrationPresenter(
+                new PrivateAdministrationView(), loggedUser, this);
+
+        privateAdministrationPresenter.go(getView().getSubContainerUser());
     }
 
-    public void updateUserList() {
-        userService.getAllUsers(new AsyncCallback<List<User>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-
-            }
-
-            @Override
-            public void onSuccess(List<User> result) {
-                getView().showUsers(result);
-            }
-        });
-
-    }
 }

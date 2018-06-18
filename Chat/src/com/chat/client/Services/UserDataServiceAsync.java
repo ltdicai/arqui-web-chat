@@ -1,7 +1,6 @@
 package com.chat.client.Services;
 
 import com.chat.client.Models.User;
-import com.chat.client.errors.UserNotFoundException;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import java.util.List;

@@ -7,7 +7,6 @@ import com.chat.client.Models.User;
 import com.chat.client.Services.ConversationService;
 import com.chat.client.errors.ConversationNotFoundException;
 import com.chat.server.Services.DatabaseProcedures.ConversationDatabaseProcedures;
-import com.chat.server.Services.DatabaseProcedures.UserDatabaseProcedures;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import java.sql.SQLException;

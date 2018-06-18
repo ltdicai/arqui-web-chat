@@ -2,12 +2,12 @@ package com.chat.server.Services;
 
 import com.chat.client.Models.User;
 import com.chat.client.errors.GeneralException;
+import com.chat.client.Services.UserDataService;
 import com.chat.client.errors.UserInvalidIDOrPassword;
 import com.chat.client.errors.UserInvalidPassword;
 import com.chat.client.errors.UserNotFoundException;
 import com.chat.server.Services.DatabaseProcedures.UserDatabaseProcedures;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.chat.client.Services.UserDataService;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

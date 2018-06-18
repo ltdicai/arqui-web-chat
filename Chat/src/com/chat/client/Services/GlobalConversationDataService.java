@@ -2,9 +2,9 @@ package com.chat.client.Services;
 
 import com.chat.client.Models.GlobalConversation;
 import com.chat.client.Models.Message;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import com.google.gwt.core.client.GWT;
 
 @RemoteServiceRelativePath("GlobalConversationDataService")
 public interface GlobalConversationDataService extends RemoteService {

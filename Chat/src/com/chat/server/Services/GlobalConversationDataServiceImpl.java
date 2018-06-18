@@ -2,10 +2,10 @@ package com.chat.server.Services;
 
 import com.chat.client.Models.GlobalConversation;
 import com.chat.client.Models.Message;
+import com.chat.client.Services.GlobalConversationDataService;
 import com.chat.client.errors.UserNotFoundException;
 import com.chat.server.Services.DatabaseProcedures.GlobalConversationDatabaseProcedures;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.chat.client.Services.GlobalConversationDataService;
 
 import java.sql.SQLException;
 
