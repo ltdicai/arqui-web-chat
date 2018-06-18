@@ -4,10 +4,7 @@ import com.chat.client.Models.*;
 import com.chat.client.errors.UserNotFoundException;
 import com.chat.server.Services.ConnectionManager;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,6 +13,33 @@ public class GlobalConversationDatabaseProcedures {
 
     public GlobalConversationDatabaseProcedures() throws SQLException {
         connection = ConnectionManager.getConnection();
+    }
+
+    public GlobalConversation insert(String conversationName) throws SQLException {
+        // Create entry on main conversations table
+
+        GlobalConversation globalConversation = new GlobalConversation();
+
+        String insert = "INSERT INTO gwtdbschema.conversations " +
+                "(conversationid) VALUES " +
+                "(?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(insert);
+        preparedStatement.setString(1, conversationName);
+        preparedStatement.execute();
+        globalConversation.setId(conversationName);
+
+
+        // Create specific entry on GroupConversations table
+        insert = "INSERT INTO gwtdbschema.globalconversations"
+                + "(conversationid) VALUES"
+                + "(?)";
+
+        preparedStatement = connection.prepareStatement(insert);
+        preparedStatement.setString(1, globalConversation.getId());
+        preparedStatement.execute();
+
+        return globalConversation;
+
     }
 
     public GlobalConversation get(int lastmessagenumber) throws SQLException, UserNotFoundException {
@@ -27,8 +51,10 @@ public class GlobalConversationDatabaseProcedures {
 
         PreparedStatement preparedStatement = connection.prepareCall(query);
         ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()){
-            globalConversation.setId(resultSet.getInt("conversationid"));
+        if (resultSet.next()){
+            globalConversation.setId(resultSet.getString("conversationid"));
+        }else{
+            globalConversation = insert("global");
         }
 
         MessageDataBaseProcedures messageDatabaseProcedures = new MessageDataBaseProcedures();
@@ -45,15 +71,19 @@ public class GlobalConversationDatabaseProcedures {
     public void addMessage(Message message) throws SQLException {
         if(message.getClass() == TextMessage.class){
             TextMessageDatabaseProcedures textMessageDatabaseProcedures = new TextMessageDatabaseProcedures();
-            textMessageDatabaseProcedures.insert((TextMessage) message, 1);
+            textMessageDatabaseProcedures.insert((TextMessage) message, "global");
         }
         else if(message.getClass() == ImageMessage.class){
             ImageMessageDatabaseProcedures imageMessageDatabaseProcedures = new ImageMessageDatabaseProcedures();
-            imageMessageDatabaseProcedures.insert((ImageMessage) message, 1);
+            imageMessageDatabaseProcedures.insert((ImageMessage) message, "global");
         }
         else if(message.getClass() == AudioMessage.class){
             AudioMessageDatabaseProcedures audioMessageDatabaseProcedures = new AudioMessageDatabaseProcedures();
-            audioMessageDatabaseProcedures.insert((AudioMessage) message, 1);
+            audioMessageDatabaseProcedures.insert((AudioMessage) message, "global");
         }
+    }
+
+    private void createGlobalConversation(){
+
     }
 }

@@ -12,10 +12,10 @@ import java.util.List;
 @RemoteServiceRelativePath("GroupConversationService")
 public interface GroupConversationService extends RemoteService {
 
-    GroupConversation getGroupConversation(int conversationId, int lastmessagenumber) throws Exception;
+    GroupConversation getGroupConversation(String conversationid, int lastmessagenumber) throws Exception;
     void addMessage(Conversation conversation, Message message);
     List<GroupConversation> getGroupConversationsForUser(User user, int lastnumber);
-    GroupConversation createGroupConversation(User hostUser, String name);
+    void createGroupConversation(User hostUser, String name);
     void addUser(Conversation conversation, User user);
     List<User> getUserPosibleAdd(Conversation conversation);
 

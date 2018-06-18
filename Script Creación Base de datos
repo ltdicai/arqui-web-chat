@@ -1,8 +1,4 @@
 -- we don't know how to generate database gwtdb (class Database) :(
-create sequence gwtdbschema.messages_messageid_seq;
-
-create sequence gwtdbschema.conversations_conversationid_seq;
-
 create table gwtdbschema.users
 (
   userid   varchar(50) not null
@@ -13,7 +9,7 @@ create table gwtdbschema.users
 
 create table gwtdbschema.conversations
 (
-  conversationid serial not null
+  conversationid varchar(50) not null
     constraint conversations_pkey
     primary key
 );
@@ -25,10 +21,10 @@ create table gwtdbschema.messages
     primary key,
   userid         varchar(50) not null
     constraint messages_userid_fkey
-    references users,
-  conversationid integer     not null
+    references gwtdbschema.users,
+  conversationid varchar(50)     not null
     constraint messages_conversationid_fkey
-    references conversations
+    references gwtdbschema.conversations
 );
 
 create table gwtdbschema.textmessages
@@ -37,17 +33,17 @@ create table gwtdbschema.textmessages
     constraint textmessages_pkey
     primary key
     constraint textmessages_messageid_fkey
-    references messages,
+    references gwtdbschema.messages,
   message   text    not null
 );
 
 create table gwtdbschema.globalconversations
 (
-  conversationid integer not null
+  conversationid varchar(50) not null
     constraint globalconversations_pkey
     primary key
     constraint globalconversations_conversationid_fkey
-    references conversations
+    references gwtdbschema.conversations
 );
 
 create table gwtdbschema.audiomessages
@@ -56,7 +52,7 @@ create table gwtdbschema.audiomessages
     constraint audiomessage_pkey
     primary key
     constraint messageid___fk
-    references messages,
+    references gwtdbschema.messages,
   message   text    not null
 );
 
@@ -67,7 +63,7 @@ create table gwtdbschema.imagemessages
 (
   messageid integer not null
     constraint imagemessages_messages_messageid_fk
-    references messages,
+    references gwtdbschema.messages,
   message   text    not null
 );
 
@@ -76,11 +72,11 @@ create unique index imagemessages_messageid_uindex
 
 create table gwtdbschema.privateconversations
 (
-  conversationid integer     not null
+  conversationid varchar(50)     not null
     constraint privateconversation_pkey
     primary key
     constraint privateconversation_conversations_conversationid_fk
-    references conversations,
+    references gwtdbschema.conversations,
   hostuserid     varchar(50) not null,
   inviteuserid   varchar(50)
 );
@@ -90,11 +86,11 @@ create unique index privateconversation_conversationid_uindex
 
 create table gwtdbschema.groupconversations
 (
-  conversationid integer      not null
+  conversationid varchar(50)      not null
     constraint groupconversation_conversationid_pk
     primary key
     constraint groupconversation_conversations__fk
-    references conversations,
+    references gwtdbschema.conversations,
   groupname      varchar(100) not null
 );
 
@@ -103,14 +99,14 @@ create unique index groupconversation_conversationid_uindex
 
 create table gwtdbschema.groups
 (
-  conversationid integer     not null
+  conversationid varchar(50)     not null
     constraint groups_pkey
     primary key
     constraint groups_conversations__fk
-    references conversations,
+    references gwtdbschema.conversations,
   userid         varchar(50) not null
     constraint groups_users__fk
-    references users
+    references gwtdbschema.users
 );
 
 

@@ -28,18 +28,17 @@ public class ConversationServiceImpl extends RemoteServiceServlet implements Con
 
     public PrivateConversation createPrivateConversation(User hostUser, User inviteUser) {
         try {
-            PrivateConversation conversation = new PrivateConversation(hostUser, inviteUser);
-            db.insert(conversation);
-            return conversation;
+
+            return db.insert(hostUser, inviteUser);
         } catch (Exception exc) {
             // TODO: Handle exceptions
+            return null;
         }
-        return null;
     }
 
     @Override
-    public PrivateConversation getPrivateConversation(Integer conversationId, int lastmessagenumber) throws Exception {
-        return db.getPrivateConversation(conversationId, lastmessagenumber);
+    public PrivateConversation getPrivateConversation(String conversationid, int lastmessagenumber) throws Exception {
+        return db.getPrivateConversation(conversationid, lastmessagenumber);
     }
 
     @Override

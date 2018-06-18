@@ -7,7 +7,7 @@ import com.chat.client.Models.User;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface ConversationServiceAsync {
-    void getPrivateConversation(Integer conversationId, int lastmessagenumber, AsyncCallback<PrivateConversation> async);
+    void getPrivateConversation(String conversationid, int lastmessagenumber, AsyncCallback<PrivateConversation> async);
     void addMessage(Conversation conversation, Message message, AsyncCallback<Void> async);
     void getPrivateConversationBetween(User loggedUser, User inviteUser,int lastnumber, AsyncCallback<PrivateConversation> async);
 }

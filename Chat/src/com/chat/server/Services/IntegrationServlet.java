@@ -111,6 +111,18 @@ public class IntegrationServlet extends HttpServlet {
         response.getWriter().write(mapper.writeValueAsString(root));
     }
 
+    private void handleNewMessage(JsonNode json, HttpServletResponse response) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode root = mapper.createObjectNode();
+        try {
+            IntegrationService.receiveNewMessage(json);
+            root.put("status", "ok");
+        } catch (Exception exc) {
+            String error = exc.toString() + "---" + exc.getMessage();
+            root.put("status", "failed");
+        }
+        response.getWriter().write(mapper.writeValueAsString(root));
+    }
     // Utils
 
     private void markAsError(HttpServletResponse response, String message) {

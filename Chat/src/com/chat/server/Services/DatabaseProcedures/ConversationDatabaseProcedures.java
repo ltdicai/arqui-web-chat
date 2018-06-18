@@ -18,13 +18,13 @@ public class ConversationDatabaseProcedures {
         messageDataBaseProcedures = new MessageDataBaseProcedures();
     }
 
-    public PrivateConversation getPrivateConversation(Integer conversationId, int lastnumber) throws SQLException, ConversationNotFoundException, UserNotFoundException{
+    public PrivateConversation getPrivateConversation(String conversationId, int lastnumber) throws SQLException, ConversationNotFoundException, UserNotFoundException{
         String query = "SELECT *"
                 + "FROM gwtdbschema.privateconversations "
                 + "WHERE conversationid = ? LIMIT 1";
 
         PreparedStatement preparedStatement = connection.prepareCall(query);
-        preparedStatement.setInt(1, conversationId);
+        preparedStatement.setString(1, conversationId);
         ResultSet resultSet = preparedStatement.executeQuery();
         if(!resultSet.next()){
             throw new ConversationNotFoundException();
@@ -58,15 +58,19 @@ public class ConversationDatabaseProcedures {
     }
 
 
-    public void insert(PrivateConversation conversation) throws SQLException {
+    public PrivateConversation insert(User host, User invite) throws SQLException {
         // Create entry on main conversations table
-        String insert = "INSERT INTO gwtdbschema.conversations DEFAULT VALUES ";
-        PreparedStatement preparedStatement = connection.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
-        preparedStatement.executeUpdate();
-        ResultSet resultSet = preparedStatement.getGeneratedKeys();
-        if (resultSet.next()) {
-            conversation.setId(resultSet.getInt(1));
-        }
+        String conversationName = host.getUserID() + "_" + invite.getUserID();
+
+        PrivateConversation conversation = new PrivateConversation(host, invite);
+        String insert = "INSERT INTO gwtdbschema.conversations " +
+                "(conversationid) VALUES " +
+                "(?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(insert);
+        preparedStatement.setString(1, conversationName);
+        preparedStatement.execute();
+
+        conversation.setId(conversationName);
 
         // Create specific entry on privateconversations table
         insert = "INSERT INTO gwtdbschema.privateconversations"
@@ -74,10 +78,11 @@ public class ConversationDatabaseProcedures {
                 + "(?,?,?)";
 
         preparedStatement = connection.prepareStatement(insert);
-        preparedStatement.setInt(1, conversation.getId());
+        preparedStatement.setString(1, conversation.getId());
         preparedStatement.setString(2, conversation.getUserHost().getUserID());
         preparedStatement.setString(3, conversation.getUserInvite().getUserID());
         preparedStatement.execute();
+        return conversation;
     }
 
     public PrivateConversation getPrivateConversationBetween(User loggedUser, User inviteUser, int lastnumber)
@@ -97,7 +102,7 @@ public class ConversationDatabaseProcedures {
             throw new ConversationNotFoundException();
         }
         PrivateConversation result = new PrivateConversation(loggedUser, inviteUser);
-        result.setId(resultSet.getInt("conversationid"));
+        result.setId(resultSet.getString("conversationid"));
         for (Message message: messageDataBaseProcedures.get(result.getId(), lastnumber)) {
             result.addMessage(message);
         }
