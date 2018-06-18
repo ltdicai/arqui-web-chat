@@ -1,6 +1,7 @@
 package com.chat.client.Services;
 
 import com.chat.client.Models.User;
+import com.chat.client.errors.GeneralException;
 import com.chat.client.errors.UserInvalidIDOrPassword;
 import com.chat.client.errors.UserInvalidPassword;
 import com.chat.client.errors.UserNotFoundException;
@@ -24,7 +25,7 @@ public interface UserDataService extends RemoteService {
         }
     }
 
-    void insert(User user, String password);
+    void insert(User user, String password) throws GeneralException;
 
     User get(String userID) throws UserNotFoundException;
 

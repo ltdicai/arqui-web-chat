@@ -1,6 +1,7 @@
 package com.chat.server.Services;
 
 import com.chat.client.Models.User;
+import com.chat.client.errors.GeneralException;
 import com.chat.client.errors.UserInvalidIDOrPassword;
 import com.chat.client.errors.UserInvalidPassword;
 import com.chat.client.errors.UserNotFoundException;
@@ -17,12 +18,19 @@ import java.util.List;
 public class UserDataServiceImpl extends RemoteServiceServlet implements UserDataService {
 
     @Override
-    public void insert(User user, String password) {
+    public void insert(User user, String password) throws GeneralException {
         try{
             UserDatabaseProcedures userDatabaseProcedures = new UserDatabaseProcedures();
             userDatabaseProcedures.insert(user, encrypt(password));
         }
-        catch (SQLException ex){
+        catch (SQLException exc){
+            System.out.println(exc.toString() + "---" + exc.getMessage());
+            throw new GeneralException(exc.toString() + "---" + exc.getMessage());
+        }
+        try {
+            IntegrationService.sendNewUser(user);
+        } catch (Exception exc){
+            System.out.println(exc.toString() + "---" + exc.getMessage());
         }
     }
 
