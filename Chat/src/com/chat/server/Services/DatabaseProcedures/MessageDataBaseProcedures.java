@@ -19,7 +19,7 @@ public class MessageDataBaseProcedures {
     }
 
 
-    int insert(Message message, int conversationid) throws SQLException {
+    int insert(Message message, String conversationid) throws SQLException {
 
         String insert = "INSERT INTO gwtdbschema.messages"
                 + "(userid, conversationid) VALUES"
@@ -28,7 +28,7 @@ public class MessageDataBaseProcedures {
         PreparedStatement preparedStatement;
         preparedStatement = connection.prepareStatement(insert, PreparedStatement.RETURN_GENERATED_KEYS);
         preparedStatement.setString(1, message.getUser().getUserID());
-        preparedStatement.setInt(2,  conversationid);
+        preparedStatement.setString(2,  conversationid);
         preparedStatement.executeUpdate();
         ResultSet rs = preparedStatement.getGeneratedKeys();
         if(rs.next()){
@@ -37,7 +37,7 @@ public class MessageDataBaseProcedures {
         return preparedStatement.getGeneratedKeys().getInt("messageid");
     }
 
-    public List<Message> get(int conversationid, int lastmessagenumber) throws SQLException, UserNotFoundException {
+    public List<Message> get(String conversationid, int lastmessagenumber) throws SQLException, UserNotFoundException {
         String getTextMessages = "(select tm.*, m.conversationid, m.userid, 'text' as typemessage from gwtdbschema.messages m, gwtdbschema.textmessages tm where m.messageid = tm.messageid)";
         String getAudioMessages = "(select am.*, m.conversationid, m.userid, 'audio' as typemessage from gwtdbschema.messages m, gwtdbschema.audiomessages am where m.messageid = am.messageid)";;
         String getImageMessages = "(select im.*, m.conversationid, m.userid, 'image' as typemessage from gwtdbschema.messages m, gwtdbschema.imagemessages im where m.messageid = im.messageid)";;
@@ -45,7 +45,7 @@ public class MessageDataBaseProcedures {
 
         PreparedStatement preparedStatement;
         preparedStatement = connection.prepareCall(get);
-        preparedStatement.setInt(1, conversationid);
+        preparedStatement.setString(1, conversationid);
         preparedStatement.setInt(2, lastmessagenumber);
         preparedStatement.execute();
         ResultSet resultSet = preparedStatement.getResultSet();

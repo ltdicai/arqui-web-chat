@@ -1,9 +1,6 @@
 package com.chat.server.Services.DatabaseProcedures;
 
-import com.chat.client.Models.Conversation;
-import com.chat.client.Models.GroupConversation;
-import com.chat.client.Models.Message;
-import com.chat.client.Models.User;
+import com.chat.client.Models.*;
 import com.chat.client.errors.ConversationNotFoundException;
 import com.chat.client.errors.UserNotFoundException;
 import com.chat.server.Services.ConnectionManager;
@@ -28,29 +25,33 @@ public class GroupConversationDatabaseProcedures {
         conversationDatabaseProcedures.addMessage(conversation, message);
     }
 
-    public void insert(GroupConversation conversation) throws SQLException {
-        // Create entry on main conversations table
-        String insert = "INSERT INTO gwtdbschema.conversations DEFAULT VALUES ";
-        PreparedStatement preparedStatement = connection.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
-        preparedStatement.executeUpdate();
-        ResultSet resultSet = preparedStatement.getGeneratedKeys();
-        if (resultSet.next()) {
-            conversation.setId(resultSet.getInt(1));
-        }
+    public void insert(String conversationName, User hostUser) throws SQLException {
 
-        // Create specific entry on GroupConversations table
+        GroupConversation groupConversation = new GroupConversation(conversationName);
+
+        String insert = "INSERT INTO gwtdbschema.conversations " +
+                "(conversationid) VALUES " +
+                "(?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(insert);
+        preparedStatement.setString(1, conversationName);
+        preparedStatement.execute();
+
+        groupConversation.setId(conversationName);
+        groupConversation.addUser(hostUser);
+
+
         insert = "INSERT INTO gwtdbschema.groupconversations"
                 + "(conversationid, groupname) VALUES"
                 + "(?,?)";
 
         preparedStatement = connection.prepareStatement(insert);
-        preparedStatement.setInt(1, conversation.getId());
-        preparedStatement.setString(2, conversation.getName());
+        preparedStatement.setString(1, groupConversation.getId());
+        preparedStatement.setString(2, groupConversation.getName());
         preparedStatement.execute();
 
         for (User user:
-             conversation.getMember()) {
-            addUser(conversation, user);
+                groupConversation.getMember()) {
+            addUser(groupConversation, user);
         }
     }
 
@@ -61,7 +62,7 @@ public class GroupConversationDatabaseProcedures {
 
         PreparedStatement preparedStatement;
         preparedStatement = connection.prepareStatement(insert);
-        preparedStatement.setInt(1, conversation.getId());
+        preparedStatement.setString(1, conversation.getId());
         preparedStatement.setString(2, user.getUserID());
         preparedStatement.execute();
     }
@@ -81,7 +82,7 @@ public class GroupConversationDatabaseProcedures {
 
         while(resultSet.next()){
             GroupConversation groupConversation = new GroupConversation(resultSet.getString("groupname"));
-            groupConversation.setId(resultSet.getInt("conversationid"));
+            groupConversation.setId(resultSet.getString("conversationid"));
             for (Message message: messageDataBaseProcedures.get(groupConversation.getId(), lastnumber)) {
                 groupConversation.addMessage(message);
             }
@@ -90,7 +91,7 @@ public class GroupConversationDatabaseProcedures {
                     "g.conversationid = ?";
 
             preparedStatement = connection.prepareCall(query);
-            preparedStatement.setInt(1, groupConversation.getId());
+            preparedStatement.setString(1, groupConversation.getId());
             ResultSet resultSetUser = preparedStatement.executeQuery();
 
             UserDatabaseProcedures userDatabaseProcedures = new UserDatabaseProcedures();
@@ -106,7 +107,7 @@ public class GroupConversationDatabaseProcedures {
         return result;
     }
 
-    public GroupConversation getGroupConversation(int conversationid, int lastnumber)
+    public GroupConversation getGroupConversation(String conversationid, int lastnumber)
             throws SQLException, ConversationNotFoundException, UserNotFoundException {
         String query = "SELECT * "
                 + "FROM gwtdbschema.groupconversations"
@@ -114,19 +115,19 @@ public class GroupConversationDatabaseProcedures {
 
         PreparedStatement preparedStatement;
         preparedStatement = connection.prepareCall(query);
-        preparedStatement.setInt(1, conversationid);
+        preparedStatement.setString(1, conversationid);
         ResultSet resultSet = preparedStatement.executeQuery();
         if(!resultSet.next()) {
             throw new ConversationNotFoundException();
         }
         GroupConversation result = new GroupConversation(resultSet.getString("groupname"));
-        result.setId(resultSet.getInt("conversationid"));
+        result.setId(resultSet.getString("conversationid"));
 
         query = "SELECT * FROM gwtdbschema.groups WHERE " +
                 "conversationid = ? ";
 
         preparedStatement = connection.prepareCall(query);
-        preparedStatement.setInt(1, result.getId());
+        preparedStatement.setString(1, result.getId());
         resultSet = preparedStatement.executeQuery();
 
         UserDatabaseProcedures userDatabaseProcedures = new UserDatabaseProcedures();
@@ -154,7 +155,7 @@ public class GroupConversationDatabaseProcedures {
 
         PreparedStatement preparedStatement;
         preparedStatement = connection.prepareCall(query);
-        preparedStatement.setInt(1, conversation.getId());
+        preparedStatement.setString(1, conversation.getId());
         ResultSet resultSet = preparedStatement.executeQuery();
         List<User> users = new ArrayList<>();
         while(resultSet.next()){

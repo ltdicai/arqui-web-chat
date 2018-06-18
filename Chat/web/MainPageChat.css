@@ -296,7 +296,6 @@ button.active {
 }
 
 .error{
-    background: red;
-    color: white;
+    color: red;
     font-size: 10px;
 }

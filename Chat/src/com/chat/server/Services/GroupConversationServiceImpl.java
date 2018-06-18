@@ -26,21 +26,18 @@ public class GroupConversationServiceImpl extends RemoteServiceServlet implement
         }
     }
     @Override
-    public GroupConversation createGroupConversation(User hostUser, String name) {
+    public void createGroupConversation(User hostUser, String name) {
         try {
-            GroupConversation conversation = new GroupConversation(name);
-            conversation.addUser(hostUser);
-            db.insert(conversation);
-            return conversation;
+            db.insert(name, hostUser);
+
         } catch (Exception exc) {
             // TODO: Handle exceptions
         }
-        return null;
     }
 
     @Override
-    public GroupConversation getGroupConversation(int conversationId, int lastmessagenumber) throws Exception {
-        return db.getGroupConversation(conversationId, lastmessagenumber);
+    public GroupConversation getGroupConversation(String conversationid, int lastmessagenumber) throws Exception {
+        return db.getGroupConversation(conversationid, lastmessagenumber);
     }
 
     @Override

@@ -54,7 +54,7 @@ public class ConversationPresenter {
         return user;
     }
 
-    public int getIdConversation(){
+    public String getIdConversation(){
         return this.conversation.getId();
     }
 

@@ -8,6 +8,7 @@ import com.chat.client.Views.GroupAdministrationView;
 import com.chat.client.Views.UserAdministrationForGroupsView;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -26,6 +27,8 @@ public class GroupAdministrationPresenter {
         HasWidgets getAddUserContainer();
 
         void setError(String error);
+
+        void selectChatButton(Button button);
     }
 
     private Display view;
@@ -70,13 +73,14 @@ public class GroupAdministrationPresenter {
                 0,  callback);
     }
 
-    public void goToGroupConversation(int conversationid){
+    public void goToGroupConversation(String conversationid, Button button){
         AsyncCallback<GroupConversation> callback = new AsyncCallback<GroupConversation>() {
             public void onFailure(Throwable caught) {
                 // TODO: Do something with errors.
             }
 
             public void onSuccess(GroupConversation groupConversation) {
+                getView().selectChatButton(button);
                 menuPresenter.goToGroupConversation(groupConversation);
             }
         };
@@ -92,13 +96,14 @@ public class GroupAdministrationPresenter {
     public void NewGroup(String name){
         if(name.length() == 0){
             view.setError("Se debe especificar un nombre para el grupo");
+            return;
         }
-        AsyncCallback<GroupConversation> callback = new AsyncCallback<GroupConversation>() {
+        AsyncCallback<Void> callback = new AsyncCallback<Void>() {
             public void onFailure(Throwable caught) {
                 // TODO: Do something with errors.
             }
 
-            public void onSuccess(GroupConversation groupConversation) {
+            public void onSuccess(Void v) {
                 updateGroups();
             }
         };
@@ -113,7 +118,7 @@ public class GroupAdministrationPresenter {
         getView().unableAddUser();
     }
 
-    public void enableUserAdministration(int conversationid){
+    public void enableUserAdministration(String conversationid){
         GroupAdministrationPresenter groupAdministrationPresenter = this;
         AsyncCallback<GroupConversation> callback = new AsyncCallback<GroupConversation>() {
             public void onFailure(Throwable caught) {

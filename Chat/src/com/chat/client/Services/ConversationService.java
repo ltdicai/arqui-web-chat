@@ -9,7 +9,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("ConversationService")
 public interface ConversationService extends RemoteService {
-    PrivateConversation getPrivateConversation(Integer conversationId, int lastmessagenumber) throws Exception;
+    PrivateConversation getPrivateConversation(String conversationid, int lastmessagenumber) throws Exception;
     void addMessage(Conversation conversation, Message message);
     PrivateConversation getPrivateConversationBetween(User loggedUser, User inviteUser, int lastnumber);
 }

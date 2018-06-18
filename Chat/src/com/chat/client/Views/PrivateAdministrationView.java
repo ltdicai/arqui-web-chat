@@ -59,6 +59,16 @@ public class PrivateAdministrationView extends Composite implements HasWidgets, 
         return this;
     }
 
+    @Override
+    public void selectChatButton(Button button){
+        for(int rowIndex = 0; rowIndex < allUsersTable.getRowCount()-1; rowIndex++){
+            //allUsersTable.getWidget(rowIndex, 2).setStyleName("");
+        }
+
+        button.setStyleName("active");
+    }
+
+    @Override
     public void showUsers(List<User> users) {
         allUsersTable.removeAllRows();
         for(int idx = 0; idx < users.size(); ++idx) {
@@ -75,7 +85,7 @@ public class PrivateAdministrationView extends Composite implements HasWidgets, 
                 public void onClick(ClickEvent event) {
                     if (presenter != null) {
                         User user = new User(openPrivateConversation.getLayoutData().toString());
-                        presenter.goToPrivateConversation(user);
+                        presenter.goToPrivateConversation(user, openPrivateConversation);
                     }
                 }
             });

@@ -50,7 +50,7 @@ public class FileUpload extends HttpServlet {
 
                     String contentType = item.getContentType();
                     String userid = request.getParameter("userid");
-                    int conversationid = Integer.parseInt(request.getParameter("conversationid"));
+                    String conversationid = request.getParameter("conversationid");
                     User user = new User(userid);
                     String message = Base64.getEncoder().encodeToString(item.get());
                     String contentTypeFile = contentType.split("/")[0];

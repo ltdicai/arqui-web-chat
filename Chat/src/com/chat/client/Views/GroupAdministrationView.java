@@ -27,9 +27,7 @@ public class GroupAdministrationView extends Composite implements HasWidgets, Gr
         noGroups = new Label();
         noGroups.setText("Sin Grupos");
         mainContainer = new FlowPanel();
-        //mainContainer.setStyleName("menu-view");
         FlexTable actionsColumn = new FlexTable();
-        //actionsColumn.setStyleName("flex-table");
         allUsers = new VerticalPanel();
         allUsers.setStyleName("groups-list-col");
         allGroups = new VerticalPanel();
@@ -41,6 +39,7 @@ public class GroupAdministrationView extends Composite implements HasWidgets, Gr
         NewGroup.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
+                setError("");
                 presenter.NewGroup(groupName.getText());
             }
         });
@@ -111,6 +110,15 @@ public class GroupAdministrationView extends Composite implements HasWidgets, Gr
     }
 
     @Override
+    public void selectChatButton(Button button){
+        for(int rowIndex = 0; rowIndex < allGroupsTable.getRowCount(); rowIndex++){
+            //allGroupsTable.getWidget(rowIndex, 1).setStyleName("");
+        }
+
+        button.setStyleName("active");
+    }
+
+    @Override
     public void showGroups(List<GroupConversation> groups) {
         allGroupsTable.removeAllRows();
         noGroups.setVisible(false);
@@ -127,8 +135,9 @@ public class GroupAdministrationView extends Composite implements HasWidgets, Gr
             openGroupConversation.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
+                    setError("");
                     if (presenter != null) {
-                        presenter.goToGroupConversation(group.getId());
+                        presenter.goToGroupConversation(group.getId(), openGroupConversation);
                     }
                 }
             });
@@ -138,6 +147,7 @@ public class GroupAdministrationView extends Composite implements HasWidgets, Gr
             addNewUser.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
+                    setError("");
                     if (presenter != null) {
                         presenter.enableUserAdministration(group.getId());
                     }

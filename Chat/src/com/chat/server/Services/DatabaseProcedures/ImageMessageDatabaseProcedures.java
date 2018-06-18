@@ -18,7 +18,7 @@ public class ImageMessageDatabaseProcedures {
         connection = ConnectionManager.getConnection();
     }
 
-    public void insert(ImageMessage message, int conversationid) throws SQLException {
+    public void insert(ImageMessage message, String conversationid) throws SQLException {
 
         String insert = "INSERT INTO gwtdbschema.imagemessages"
                 + "(messageid, message) VALUES"
@@ -34,7 +34,7 @@ public class ImageMessageDatabaseProcedures {
         preparedStatement.execute();
     }
 
-    public Stack<ImageMessage> get(int conversationid) throws SQLException, UserNotFoundException {
+    public Stack<ImageMessage> get(String conversationid) throws SQLException, UserNotFoundException {
         String get = "select tm.*, m.userid, m.conversationid from gwtdbschema.imagemessages tm, gwtdbschema.messages m where m.conversationid = ? and tm.messageid = m.messageid order by messageid";
 
         PreparedStatement preparedStatement;

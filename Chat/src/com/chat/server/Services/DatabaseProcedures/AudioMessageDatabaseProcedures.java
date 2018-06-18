@@ -19,7 +19,7 @@ public class AudioMessageDatabaseProcedures {
         connection = ConnectionManager.getConnection();
     }
 
-    public void insert(AudioMessage message, int conversationid) throws SQLException {
+    public void insert(AudioMessage message, String conversationid) throws SQLException {
 
             String insert = "INSERT INTO gwtdbschema.audiomessages"
                     + "(messageid, message) VALUES"
@@ -36,7 +36,7 @@ public class AudioMessageDatabaseProcedures {
 
     }
 
-    public List<AudioMessage> get(int conversationid) throws SQLException, UserNotFoundException {
+    public List<AudioMessage> get(String conversationid) throws SQLException, UserNotFoundException {
         String get = "select tm.*, m.userid, m.conversationid from gwtdbschema.audiomessages tm, gwtdbschema.messages m where m.conversationid = ? and tm.messageid = m.messageid order by messageid";
 
         PreparedStatement preparedStatement;

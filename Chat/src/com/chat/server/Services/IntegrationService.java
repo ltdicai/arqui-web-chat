@@ -1,10 +1,10 @@
 package com.chat.server.Services;
 
-import com.chat.client.Models.Conversation;
-import com.chat.client.Models.PrivateConversation;
-import com.chat.client.Models.User;
+import com.chat.client.Models.*;
 import com.chat.client.Services.UserDataService;
 import com.chat.server.Services.DatabaseProcedures.ConversationDatabaseProcedures;
+import com.chat.server.Services.DatabaseProcedures.MessageDataBaseProcedures;
+import com.chat.server.Services.DatabaseProcedures.TextMessageDatabaseProcedures;
 import com.chat.server.Services.DatabaseProcedures.UserDatabaseProcedures;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -111,12 +111,36 @@ public class IntegrationService {
             User hostUser = new User(userIds.get(0));
             User inviteUser = new User(userIds.get(1));
             try {
-                PrivateConversation conversation = new PrivateConversation(hostUser, inviteUser);
-                conversation.setExternalId(platform + "_" + roomId);
-                db.insert(conversation);
+                db.insert(hostUser, inviteUser);
             } catch (Exception exc) {
                 System.out.println(exc.toString() + "---" + exc.getMessage());
             }
+        }
+    }
+
+    public static void sendNewMessage(Conversation conversation, TextMessage textMessage) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode root = mapper.createObjectNode();
+        root.put("roomOriginalPlatform", conversation.getId());
+        root.put("roomId", conversation.getId());
+        root.put("senderId", textMessage.getUser().getUserID());
+        root.put("senderPlatform", getToken());
+        root.put("text", textMessage.getMessage());
+        IntegrationClient.newUser(mapper.writeValueAsString(root));
+    }
+
+    public static void receiveNewMessage(JsonNode json) {
+        String userId = json.get("senderPlatform").asText() + "_" + json.get("senderId").asText();
+        String conversationid = json.get("senderPlatform").asText() + "_" + json.get("roomId").asInt();
+        String message = json.get("text").asText();
+        User user = new User(userId);
+        TextMessage textMessage = new TextMessage(user, message);
+        try{
+            TextMessageDatabaseProcedures textMessageDatabaseProcedures = new TextMessageDatabaseProcedures();
+            textMessageDatabaseProcedures.insert(textMessage, conversationid);
+        }
+        catch (SQLException exc){
+            System.out.println(exc.toString() + "---" + exc.getMessage());
         }
     }
 

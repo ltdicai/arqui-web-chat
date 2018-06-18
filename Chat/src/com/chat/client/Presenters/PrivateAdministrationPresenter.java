@@ -5,6 +5,7 @@ import com.chat.client.Services.UserDataService;
 import com.chat.client.Services.UserDataServiceAsync;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -19,6 +20,7 @@ public class PrivateAdministrationPresenter {
         Widget asWidget();
 
         Widget getViewInstance();
+        void selectChatButton(Button button);
     }
 
     private PrivateAdministrationPresenter.Display view;
@@ -68,7 +70,8 @@ public class PrivateAdministrationPresenter {
         return loggerUser;
     }
 
-    public void goToPrivateConversation(User user){
+    public void goToPrivateConversation(User user, Button button){
+        getView().selectChatButton(button);
         menuPresenter.goToPrivateConversation(user);
     }
 }

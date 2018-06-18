@@ -19,7 +19,7 @@ public class TextMessageDatabaseProcedures {
         connection = ConnectionManager.getConnection();
     }
 
-    void insert(TextMessage message, int conversationid) throws SQLException {
+    public void insert(TextMessage message, String conversationid) throws SQLException {
 
             String insert = "INSERT INTO gwtdbschema.textmessages"
                     + "(messageid, message) VALUES"
@@ -36,7 +36,7 @@ public class TextMessageDatabaseProcedures {
 
     }
 
-    public List<TextMessage> get(int conversationid) throws SQLException, UserNotFoundException {
+    public List<TextMessage> get(String conversationid) throws SQLException, UserNotFoundException {
         String get = "select tm.*, m.userid, m.conversationid from gwtdbschema.textmessages tm, gwtdbschema.messages m where m.conversationid = ? and tm.messageid = m.messageid order by messageid";
 
         PreparedStatement preparedStatement;

@@ -1,4 +1,7 @@
--- we don't know how to generate database gwtdb (class Database) :(
+DROP SCHEMA IF EXISTS gwtdbschema CASCADE;
+
+CREATE SCHEMA gwtdbschema;
+
 create table gwtdbschema.users
 (
   userid   varchar(50) not null
@@ -11,7 +14,8 @@ create table gwtdbschema.conversations
 (
   conversationid varchar(50) not null
     constraint conversations_pkey
-    primary key
+    primary key,
+  externalid varchar(50) not null
 );
 
 create table gwtdbschema.messages
@@ -22,7 +26,7 @@ create table gwtdbschema.messages
   userid         varchar(50) not null
     constraint messages_userid_fkey
     references gwtdbschema.users,
-  conversationid varchar(50)     not null
+  conversationid varchar(50) not null
     constraint messages_conversationid_fkey
     references gwtdbschema.conversations
 );
@@ -37,15 +41,6 @@ create table gwtdbschema.textmessages
   message   text    not null
 );
 
-create table gwtdbschema.globalconversations
-(
-  conversationid varchar(50) not null
-    constraint globalconversations_pkey
-    primary key
-    constraint globalconversations_conversationid_fkey
-    references gwtdbschema.conversations
-);
-
 create table gwtdbschema.audiomessages
 (
   messageid integer not null
@@ -56,9 +51,6 @@ create table gwtdbschema.audiomessages
   message   text    not null
 );
 
-create unique index audiomessage_messageid_uindex
-  on gwtdbschema.audiomessages (messageid);
-
 create table gwtdbschema.imagemessages
 (
   messageid integer not null
@@ -67,12 +59,9 @@ create table gwtdbschema.imagemessages
   message   text    not null
 );
 
-create unique index imagemessages_messageid_uindex
-  on gwtdbschema.imagemessages (messageid);
-
 create table gwtdbschema.privateconversations
 (
-  conversationid varchar(50)     not null
+  conversationid varchar(50) not null
     constraint privateconversation_pkey
     primary key
     constraint privateconversation_conversations_conversationid_fk
@@ -81,12 +70,9 @@ create table gwtdbschema.privateconversations
   inviteuserid   varchar(50)
 );
 
-create unique index privateconversation_conversationid_uindex
-  on gwtdbschema.privateconversations (conversationid);
-
 create table gwtdbschema.groupconversations
 (
-  conversationid varchar(50)      not null
+  conversationid varchar(50) not null
     constraint groupconversation_conversationid_pk
     primary key
     constraint groupconversation_conversations__fk
@@ -94,12 +80,9 @@ create table gwtdbschema.groupconversations
   groupname      varchar(100) not null
 );
 
-create unique index groupconversation_conversationid_uindex
-  on gwtdbschema.groupconversations (conversationid);
-
 create table gwtdbschema.groups
 (
-  conversationid varchar(50)     not null
+  conversationid varchar(50) not null
     constraint groups_pkey
     primary key
     constraint groups_conversations__fk
@@ -108,5 +91,3 @@ create table gwtdbschema.groups
     constraint groups_users__fk
     references gwtdbschema.users
 );
-
-
