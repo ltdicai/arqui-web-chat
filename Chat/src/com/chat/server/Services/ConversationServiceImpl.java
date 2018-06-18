@@ -30,6 +30,7 @@ public class ConversationServiceImpl extends RemoteServiceServlet implements Con
         try {
             PrivateConversation conversation = new PrivateConversation(hostUser, inviteUser);
             db.insert(conversation);
+            IntegrationService.sendNewRoom(conversation);
             return conversation;
         } catch (Exception exc) {
             // TODO: Handle exceptions

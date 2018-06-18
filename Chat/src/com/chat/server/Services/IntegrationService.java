@@ -4,6 +4,7 @@ import com.chat.client.Models.Conversation;
 import com.chat.client.Models.PrivateConversation;
 import com.chat.client.Models.User;
 import com.chat.client.Services.UserDataService;
+import com.chat.server.Services.DatabaseProcedures.ConversationDatabaseProcedures;
 import com.chat.server.Services.DatabaseProcedures.UserDatabaseProcedures;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +23,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class IntegrationService {
@@ -87,7 +89,36 @@ public class IntegrationService {
         }
     }
 
-
+    public static void receiveNewRoom(JsonNode json) throws Exception {
+        ConversationDatabaseProcedures db = new ConversationDatabaseProcedures();
+        String type = json.get("type").asText();
+        String roomId = json.get("id").asText();
+        String platform = json.get("platform").asText();
+        if ("private".equals(type)) {
+            JsonNode platformsNode = json.get("users");
+            List<String> userIds = new ArrayList<>();
+            for (JsonNode platformNode : platformsNode) {
+                Iterator<String> names = platformNode.fieldNames();
+                String platformName = names.next();
+                JsonNode userIdsNodes = platformNode.get(platformName);
+                for (JsonNode userIdNode : userIdsNodes) {
+                    String userId = userIdNode.asText();
+                    userIds.add(platformName + "_" + userId);
+                }
+            }
+            System.out.println(userIds.get(0));
+            System.out.println(userIds.get(1));
+            User hostUser = new User(userIds.get(0));
+            User inviteUser = new User(userIds.get(1));
+            try {
+                PrivateConversation conversation = new PrivateConversation(hostUser, inviteUser);
+                conversation.setExternalId(platform + "_" + roomId);
+                db.insert(conversation);
+            } catch (Exception exc) {
+                System.out.println(exc.toString() + "---" + exc.getMessage());
+            }
+        }
+    }
 
     private static String encrypt(String password) {
         try {

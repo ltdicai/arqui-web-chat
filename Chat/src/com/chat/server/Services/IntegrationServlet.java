@@ -55,6 +55,11 @@ public class IntegrationServlet extends HttpServlet {
                     JsonNode json = mapper.readTree(request.getReader());
                     handleNewUser(json, response);
                 }
+                else if (requestURI.endsWith("/room")) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonNode json = mapper.readTree(request.getReader());
+                    handleNewRoom(json, response);
+                }
                 else {
                     markAsError(response, "Don't understand '" + requestURI + "'");
                 }
@@ -103,6 +108,19 @@ public class IntegrationServlet extends HttpServlet {
         ObjectNode root = mapper.createObjectNode();
         try {
             IntegrationService.receiveNewUser(json);
+            root.put("status", "ok");
+        } catch (Exception exc) {
+            String error = exc.toString() + "---" + exc.getMessage();
+            root.put("status", "failed");
+        }
+        response.getWriter().write(mapper.writeValueAsString(root));
+    }
+
+    private void handleNewRoom(JsonNode json, HttpServletResponse response) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode root = mapper.createObjectNode();
+        try {
+            IntegrationService.receiveNewRoom(json);
             root.put("status", "ok");
         } catch (Exception exc) {
             String error = exc.toString() + "---" + exc.getMessage();
