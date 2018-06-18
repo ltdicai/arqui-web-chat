@@ -3,7 +3,6 @@ package com.chat.server.Services.DatabaseProcedures;
 import com.chat.client.Models.*;
 import com.chat.client.errors.UserNotFoundException;
 import com.chat.server.Services.ConnectionManager;
-import com.google.gwt.validation.client.impl.metadata.MessageAndPath;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Stack;
 
 public class GlobalConversationDatabaseProcedures {
     private static Connection connection;

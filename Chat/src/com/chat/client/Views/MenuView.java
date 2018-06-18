@@ -1,19 +1,11 @@
 package com.chat.client.Views;
 
-import com.chat.client.Models.User;
 import com.chat.client.Presenters.MenuPresenter;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.ScrollHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
 import java.util.Iterator;
-import java.util.List;
 
 public class MenuView extends Composite implements HasWidgets, MenuPresenter.Display {
 
@@ -25,13 +17,11 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
     Button logout;
     Button globalConversation;
     Button privateConversation;
-    Button testPrivateConversation;
+
     Button groups;
     Label userNameLabel;
-    private FlexTable allUsersTable;
 
     private MenuPresenter presenter;
-    private Timer timer;
 
     public MenuView(){
         container = new AbsolutePanel();
@@ -50,8 +40,6 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
         userInfo.setStyleName("user-info");
         FlowPanel conversationPicker = new FlowPanel();
         conversationPicker.setStyleName("conv-picker");
-        FlowPanel allUsers = new FlowPanel();
-        allUsers.setStyleName("all-users");
 
         userNameLabel = new Label();
         logout = new Button("Logout");
@@ -68,23 +56,15 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
         conversationPicker.add(privateConversation);
         conversationPicker.add(groups);
 
-        // All users table
-        allUsersTable = new FlexTable();
-
-        allUsers.add(allUsersTable);
-
         actionsColumn.add(userInfo);
         actionsColumn.add(conversationPicker);
-        actionsColumn.add(allUsers);
-
-        FlowPanel messages = new FlowPanel();
-        messages.setStyleName("messages");
-        FlowPanel sendActions = new FlowPanel();
-        sendActions.setStyleName("send-actions");
 
         subContainerUser = new HorizontalPanel();
         subConteinerButtons = new HorizontalPanel();
+        subContainerUser.setStyleName("all-users");
         subConteinerChats = chatColumn;
+
+        actionsColumn.add(subContainerUser);
 
         logout.addClickHandler(new ClickHandler(){
             @Override
@@ -128,7 +108,7 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
                             groups.getStyleName().replace("active","")
                     );
                     privateConversation.setStyleName(privateConversation.getStyleName() + " active");
-                    presenter.goToGlobalConversation();
+                    presenter.goToPrivateAdmistration();
                 }
             }
         });
@@ -151,17 +131,6 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
                 }
             }
         });
-
-        // Update user list
-        timer = new Timer() {
-            @Override
-            public void run() {
-                if (presenter != null) {
-                    presenter.updateUserList();
-                }
-            }
-        };
-        timer.scheduleRepeating(2000);
 
     }
 
@@ -195,40 +164,31 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
         return container.remove(w);
     }
 
-    public HTMLTable getAllUsersTable() {
-        return allUsersTable;
-    }
-
-    public void showUsers(List<User> users) {
-        allUsersTable.removeAllRows();
-        for(int idx = 0; idx < users.size(); ++idx) {
-            User user = users.get(idx);
-            if (user.equals(presenter.getLoggedUser())) {
-                continue;
-            }
-            allUsersTable.setText(idx, 0,  user.getUserID());
-            allUsersTable.setText(idx, 1,  "offline");
-            Button openPrivateConversation = new Button("Privado");
-            openPrivateConversation.setLayoutData(users.get(idx).getUserID());
-            openPrivateConversation.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    Window.alert((String) openPrivateConversation.getLayoutData());
-                    if (presenter != null) {
-                        presenter.goToPrivateConversation(user);
-                    }
-                }
-            });
-
-            allUsersTable.setWidget(idx, 2, openPrivateConversation);
-
-        }
-    }
-
-    @Override
-    public void doLogout() {
-        timer.cancel();
-    }
+//    public void showUsers(List<User> users) {
+//        allUsersTable.removeAllRows();
+//        for(int idx = 0; idx < users.size(); ++idx) {
+//            User user = users.get(idx);
+//            if (user.equals(presenter.getLoggedUser())) {
+//                continue;
+//            }
+//            allUsersTable.setText(idx, 0,  user.getUserID());
+//            allUsersTable.setText(idx, 1,  "offline");
+//            Button openPrivateConversation = new Button("Privado");
+//            openPrivateConversation.setLayoutData(users.get(idx).getUserID());
+//            openPrivateConversation.addClickHandler(new ClickHandler() {
+//                @Override
+//                public void onClick(ClickEvent event) {
+//                    Window.alert((String) openPrivateConversation.getLayoutData());
+//                    if (presenter != null) {
+//                        presenter.goToPrivateConversation(user);
+//                    }
+//                }
+//            });
+//
+//            allUsersTable.setWidget(idx, 2, openPrivateConversation);
+//
+//        }
+//    }
 
     @Override
     public MenuView getViewInstance(){
@@ -243,6 +203,11 @@ public class MenuView extends Composite implements HasWidgets, MenuPresenter.Dis
     @Override
     public HasWidgets getSubContainerChat(){
         return this.subConteinerChats;
+    }
+
+    @Override
+    public HasWidgets getSubContainerUser(){
+        return this.subContainerUser;
     }
 
 }

@@ -13,25 +13,36 @@ public class ConversationView extends Composite implements HasWidgets, Conversat
     Panel container;
     Panel messageBox;
     Panel sendsContainer;
+    Panel Title;
     TextBox message;
     Button newMessage;
     Button newFile;
     FormPanel fileUploadPanel;
     FileUpload fileUpload;
     Label error;
+    Label title;
 
     private ConversationPresenter presenter;
 
     public ConversationView() {
-        container = new AbsolutePanel();
+        container = new VerticalPanel();
+        container.setStyleName("chat-container");
+        Title = new HorizontalPanel();
+        Title.setStyleName("title");
+        title = new Label();
+        Title.add(title);
+
         newMessage = new Button("Enviar");
         newFile = new Button("Cargar imagen o audio");
         message = new TextBox();
         messageBox = new VerticalPanel();
+        messageBox.setStyleName("messagesList");
         sendsContainer = new HorizontalPanel();
+        sendsContainer.setStyleName("send-options");
         error = new Label();
         container.add(error);
 
+        container.add(Title);
         container.add(messageBox);
         container.add(sendsContainer);
         sendsContainer.add(message);
@@ -100,6 +111,11 @@ public class ConversationView extends Composite implements HasWidgets, Conversat
     public void setPresenter(ConversationPresenter presenter){
         this.presenter = presenter;
         setAction();
+    }
+
+    @Override
+    public void setTitle(String title){
+        this.title.setText(title);
     }
 
     @Override
@@ -173,13 +189,15 @@ public class ConversationView extends Composite implements HasWidgets, Conversat
     private void newImageMessage(String message, String etiqueta, String style) {
         Image newImageMessage = new Image(message);
         newImageMessage.setUrl(message);
+        newImageMessage.setAltText(etiqueta + ":");
         newImageMessage.setStyleName(style);
-        VerticalPanel panel = new VerticalPanel();
+        Panel panel = new AbsolutePanel();
         Label etiquetaLabel = new Label(etiqueta + ": ");
         panel.add(etiquetaLabel);
         panel.add(newImageMessage);
+        panel.setStyleName(style + " me-him-container");
+
         messageBox.add(panel);
-        messageBox.setStyleName(style);
     }
 
     @Override
@@ -221,12 +239,12 @@ public class ConversationView extends Composite implements HasWidgets, Conversat
                 }
             }
         });
-        VerticalPanel panel = new VerticalPanel();
+        Panel panel = new AbsolutePanel();
         Label etiquetaLabel = new Label(etiqueta + ": ");
         panel.add(etiquetaLabel);
         panel.add(audioMessageButton);
+        panel.setStyleName(style + " me-him-container");
         messageBox.add(panel);
-        messageBox.setStyleName(style);
     }
 
 }

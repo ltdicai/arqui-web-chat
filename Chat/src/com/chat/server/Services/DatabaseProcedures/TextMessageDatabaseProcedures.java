@@ -1,6 +1,5 @@
 package com.chat.server.Services.DatabaseProcedures;
 
-import com.chat.client.Models.GlobalConversation;
 import com.chat.client.Models.TextMessage;
 import com.chat.client.Models.User;
 import com.chat.client.errors.UserNotFoundException;
@@ -12,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 public class TextMessageDatabaseProcedures {
     private static Connection connection;

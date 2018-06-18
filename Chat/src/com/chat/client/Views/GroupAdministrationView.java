@@ -20,19 +20,20 @@ public class GroupAdministrationView extends Composite implements HasWidgets, Gr
     private TextBox groupName;
     VerticalPanel allUsers;
     VerticalPanel allGroups;
+    Label error;
     public GroupAdministrationView(){
         container = new AbsolutePanel();
+        container.setStyleName("groups-list");
         noGroups = new Label();
         noGroups.setText("Sin Grupos");
         mainContainer = new FlowPanel();
-        mainContainer.setStyleName("menu-view");
+        //mainContainer.setStyleName("menu-view");
         FlexTable actionsColumn = new FlexTable();
-        actionsColumn.setStyleName("flex-table");
+        //actionsColumn.setStyleName("flex-table");
         allUsers = new VerticalPanel();
-        allUsers.setStyleName("row");
+        allUsers.setStyleName("groups-list-col");
         allGroups = new VerticalPanel();
-        allGroups.setStyleName("row");
-
+        allGroups.setStyleName("groups-list-col");
         mainContainer.add(actionsColumn);
 
         groupName = new TextBox();
@@ -46,7 +47,10 @@ public class GroupAdministrationView extends Composite implements HasWidgets, Gr
 
         allGroupsTable = new FlexTable();
 
+        error = new Label();
+        error.setStyleName("error");
 
+        allGroups.add(error);
         allGroups.add(noGroups);
         allGroups.add(NewGroup);
         allGroups.add(groupName);
@@ -99,6 +103,11 @@ public class GroupAdministrationView extends Composite implements HasWidgets, Gr
     @Override
     public HasWidgets getAddUserContainer(){
         return allUsers;
+    }
+
+    @Override
+    public void setError(String error){
+        this.error.setText(error);
     }
 
     @Override
