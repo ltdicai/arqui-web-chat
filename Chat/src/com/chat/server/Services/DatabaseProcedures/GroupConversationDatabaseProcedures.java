@@ -25,7 +25,7 @@ public class GroupConversationDatabaseProcedures {
         conversationDatabaseProcedures.addMessage(conversation, message);
     }
 
-    public void insert(String conversationName, User hostUser) throws SQLException {
+    public GroupConversation insert(String conversationName, User hostUser) throws SQLException {
 
         GroupConversation groupConversation = new GroupConversation(conversationName);
 
@@ -53,6 +53,7 @@ public class GroupConversationDatabaseProcedures {
                 groupConversation.getMember()) {
             addUser(groupConversation, user);
         }
+        return groupConversation;
     }
 
     public void addUser(Conversation conversation, User user) throws SQLException{
