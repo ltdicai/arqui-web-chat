@@ -17,6 +17,15 @@ create table gwtdbschema.conversations
     primary key
 );
 
+create table gwtdbschema.globalconversations
+(
+  conversationid varchar(50) not null
+    constraint globalconversations_pkey
+    primary key
+    constraint globalconversations_conversationid_fkey
+    references gwtdbschema.conversations
+);
+
 create table gwtdbschema.messages
 (
   messageid      serial      not null

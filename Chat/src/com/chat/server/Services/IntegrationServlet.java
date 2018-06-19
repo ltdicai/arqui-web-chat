@@ -100,6 +100,9 @@ public class IntegrationServlet extends HttpServlet {
         ObjectNode root = mapper.createObjectNode();
         ArrayNode usersArray = root.putArray("users");
         for (User user:users) {
+            if (!IntegrationService.getAppName().equals(IntegrationService.getPlatformNameForUser(user))) {
+                continue;
+            }
             ObjectNode userObj = usersArray.addObject();
             userObj.put("id", user.getUserID());
             userObj.put("name", user.getUserID());

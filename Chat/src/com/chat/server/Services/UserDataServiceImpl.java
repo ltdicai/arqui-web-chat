@@ -48,6 +48,7 @@ public class UserDataServiceImpl extends RemoteServiceServlet implements UserDat
 
     @Override
     public List<User> getAllUsers() {
+        IntegrationClient.syncUsers();
         List<User> results = new ArrayList<>();
         try {
             UserDatabaseProcedures userDatabaseProcedures = new UserDatabaseProcedures();

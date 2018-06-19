@@ -3,6 +3,7 @@ package com.chat.server.Services;
 import com.chat.client.Models.*;
 import com.chat.client.Services.UserDataService;
 import com.chat.server.Services.DatabaseProcedures.ConversationDatabaseProcedures;
+import com.chat.server.Services.DatabaseProcedures.GroupConversationDatabaseProcedures;
 import com.chat.server.Services.DatabaseProcedures.MessageDataBaseProcedures;
 import com.chat.server.Services.DatabaseProcedures.TextMessageDatabaseProcedures;
 import com.chat.server.Services.DatabaseProcedures.UserDatabaseProcedures;
@@ -155,7 +156,7 @@ public class IntegrationService {
 
 
     public static void receiveNewUser(JsonNode json) {
-        String userId = json.get("platform").asText() + "/" + json.get("name").asText();
+        String userId = json.get("platform").asText() + "/" + json.get("id").asText();
         String password = "default";
         User user = new User(userId);
         try{
@@ -169,6 +170,7 @@ public class IntegrationService {
 
     public static void receiveNewRoom(JsonNode json) throws Exception {
         ConversationDatabaseProcedures db = new ConversationDatabaseProcedures();
+        GroupConversationDatabaseProcedures groupDB = new GroupConversationDatabaseProcedures();
         String type = json.get("type").asText();
         String roomId = json.get("platform").asText() + ":" +json.get("id").asText();
         String platform = json.get("platform").asText();
@@ -197,6 +199,34 @@ public class IntegrationService {
             } catch (Exception exc) {
                 System.out.println(exc.toString() + "---" + exc.getMessage());
             }
+        } else {
+            JsonNode platformsNode = json.get("users");
+            List<String> userIds = new ArrayList<>();
+            for (JsonNode platformNode : platformsNode) {
+                Iterator<String> names = platformNode.fieldNames();
+                String platformName = names.next();
+                JsonNode userIdsNodes = platformNode.get(platformName);
+                for (JsonNode userIdNode : userIdsNodes) {
+                    String userId = userIdNode.asText();
+                    if(!getAppName().equals(platformName)) {
+                        userIds.add(platformName + "/" + userId);
+                    } else {
+                        userIds.add(userId);
+                    }
+                }
+            }
+            List<User> users = new ArrayList<>();
+            for (String userId : userIds) {
+                users.add(new User(userId));
+            }
+            try {
+                //groupDB.insert();
+                //db.insert(hostUser, inviteUser, roomId);
+            } catch (Exception exc) {
+                System.out.println(exc.toString() + "---" + exc.getMessage());
+            }
+
+
         }
     }
 
@@ -229,6 +259,25 @@ public class IntegrationService {
         catch (SQLException exc){
             System.out.println(exc.toString() + "---" + exc.getMessage());
         }
+    }
+
+    public static void syncUsers(JsonNode json) {
+        JsonNode platformsNode = json.get("platforms");
+        for(JsonNode platformNode : platformsNode) {
+            String platformName = platformNode.get("name").asText();
+            if (getAppName().equals(platformName)) {
+                continue;
+            }
+            JsonNode usersNode = platformNode.get("users");
+            for(JsonNode userNode : usersNode) {
+                try {
+                    IntegrationService.receiveNewUser(userNode);
+                } catch (Exception exc) {
+                    System.out.println(exc.toString() + "---" + exc.getMessage());
+                }
+            }
+        }
+
     }
 
     private static String encrypt(String password) {
