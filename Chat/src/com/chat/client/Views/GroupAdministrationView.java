@@ -13,55 +13,49 @@ public class GroupAdministrationView extends Composite implements HasWidgets, Gr
 
     private Panel mainContainer;
     Panel container;
-    private FlexTable allGroupsTable;
     private GroupAdministrationPresenter presenter;
-    private Label noGroups;
-    private Button NewGroup;
-    private TextBox groupName;
-    VerticalPanel allUsers;
-    VerticalPanel allGroups;
-    Label error;
-    public GroupAdministrationView(){
-        container = new AbsolutePanel();
-        container.setStyleName("groups-list");
-        noGroups = new Label();
-        noGroups.setText("Sin Grupos");
-        mainContainer = new FlowPanel();
-        FlexTable actionsColumn = new FlexTable();
-        allUsers = new VerticalPanel();
-        allUsers.setStyleName("groups-list-col");
-        allGroups = new VerticalPanel();
-        allGroups.setStyleName("groups-list-col");
-        mainContainer.add(actionsColumn);
+    private Button newGroup;
+    private Button showGroupList;
+    HorizontalPanel groupButtons;
+    VerticalPanel allContainer;
+    FlowPanel content;
 
-        groupName = new TextBox();
-        NewGroup = new Button("Nuevo grupo");
-        NewGroup.addClickHandler(new ClickHandler() {
+    public GroupAdministrationView(){
+
+        mainContainer = new FlowPanel();
+        allContainer = new VerticalPanel();
+
+
+        newGroup = new Button("Nuevo grupo");
+        newGroup.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                setError("");
-                presenter.NewGroup(groupName.getText());
+                presenter.goToCreateGroup();
+
+
             }
         });
 
-        allGroupsTable = new FlexTable();
+        showGroupList = new Button("Lista");
 
-        error = new Label();
-        error.setStyleName("error");
+        showGroupList.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                presenter.updateGroups();
+            }
+        });
 
-        allGroups.add(error);
-        allGroups.add(noGroups);
-        allGroups.add(NewGroup);
-        allGroups.add(groupName);
-        allGroups.add(allGroupsTable);
-
-        actionsColumn.setWidget(0,0, allGroups);
-        actionsColumn.setWidget(0,1, allUsers);
+        content = new FlowPanel();
+        groupButtons = new HorizontalPanel();
+        groupButtons.add(showGroupList);
+        groupButtons.add(newGroup);
+        allContainer.add(groupButtons);
+        allContainer.add(content);
     }
 
     @Override
     public Widget asWidget() {
-        return mainContainer;
+        return allContainer;
     }
 
     @Override
@@ -95,36 +89,25 @@ public class GroupAdministrationView extends Composite implements HasWidgets, Gr
     }
 
     @Override
-    public void unableAddUser() {
-        allUsers.clear();
-    }
-
-    @Override
-    public HasWidgets getAddUserContainer(){
-        return allUsers;
-    }
-
-    @Override
-    public void setError(String error){
-        this.error.setText(error);
+    public HasWidgets getContentContainer() {
+        return content;
     }
 
     @Override
     public void selectChatButton(Button button){
-        for(int rowIndex = 0; rowIndex < allGroupsTable.getRowCount(); rowIndex++){
-            //allGroupsTable.getWidget(rowIndex, 1).setStyleName("");
-        }
 
-        button.setStyleName("active");
     }
 
     @Override
     public void showGroups(List<GroupConversation> groups) {
-        allGroupsTable.removeAllRows();
-        noGroups.setVisible(false);
+        content.clear();
         if(groups.isEmpty()){
-            noGroups.setVisible(true);
+            Label noGroups = new Label("No hay grupos");
+            content.add(noGroups);
+            return;
         }
+        FlexTable allGroupsTable = new FlexTable();
+        content.add(allGroupsTable);
         int rowIndex = 0;
         for (GroupConversation group:
              groups) {
@@ -135,7 +118,6 @@ public class GroupAdministrationView extends Composite implements HasWidgets, Gr
             openGroupConversation.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    setError("");
                     if (presenter != null) {
                         presenter.goToGroupConversation(group.getId(), openGroupConversation);
                     }
@@ -147,7 +129,6 @@ public class GroupAdministrationView extends Composite implements HasWidgets, Gr
             addNewUser.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    setError("");
                     if (presenter != null) {
                         presenter.enableUserAdministration(group.getId());
                     }

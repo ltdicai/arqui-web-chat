@@ -56,6 +56,40 @@ public class GroupConversationDatabaseProcedures {
         return groupConversation;
     }
 
+    public GroupConversation insert(String conversationName, User hostUser, List<User> members) throws SQLException {
+
+        GroupConversation groupConversation = new GroupConversation(conversationName);
+        for (User user : members) {
+            groupConversation.addUser(user);
+        }
+
+        String insert = "INSERT INTO gwtdbschema.conversations " +
+                "(conversationid) VALUES " +
+                "(?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(insert);
+        preparedStatement.setString(1, conversationName);
+        preparedStatement.execute();
+
+        groupConversation.setId(conversationName);
+        groupConversation.addUser(hostUser);
+
+
+        insert = "INSERT INTO gwtdbschema.groupconversations"
+                + "(conversationid, groupname) VALUES"
+                + "(?,?)";
+
+        preparedStatement = connection.prepareStatement(insert);
+        preparedStatement.setString(1, groupConversation.getId());
+        preparedStatement.setString(2, groupConversation.getName());
+        preparedStatement.execute();
+
+        for (User user:
+                groupConversation.getMember()) {
+            addUser(groupConversation, user);
+        }
+        return groupConversation;
+    }
+
     public void addUser(Conversation conversation, User user) throws SQLException{
         String insert = "INSERT INTO gwtdbschema.groups"
                 + "(conversationid, userid) VALUES"

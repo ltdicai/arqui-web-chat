@@ -23,10 +23,11 @@ public class GroupAdministrationPresenter {
         Widget asWidget();
 
         GroupAdministrationView getViewInstance();
-        void unableAddUser();
-        HasWidgets getAddUserContainer();
+        HasWidgets getContentContainer();
+        //void unableAddUser();
+        //HasWidgets getAddUserContainer();
 
-        void setError(String error);
+        //void setError(String error);
 
         void selectChatButton(Button button);
     }
@@ -53,7 +54,7 @@ public class GroupAdministrationPresenter {
         bind();
         container.clear();
         container.add(view.asWidget());
-        updateGroups();
+        //updateGroups();
     }
 
     public void updateGroups() {
@@ -94,7 +95,7 @@ public class GroupAdministrationPresenter {
 
 
     public void NewGroup(String name){
-        if(name.length() == 0){
+        /*if(name.length() == 0){
             view.setError("Se debe especificar un nombre para el grupo");
             return;
         }
@@ -111,14 +112,15 @@ public class GroupAdministrationPresenter {
         GroupConversationServiceAsync conversationServiceAsync = GWT.create(GroupConversationService.class);
 
         conversationServiceAsync.createGroupConversation(loggerUser,
-                name,  callback);
+                name,  callback);*/
     }
 
-    public void unableAddUser(){
-        getView().unableAddUser();
+    public void unableAddUser(){/*
+        getView().unableAddUser();*/
     }
 
     public void enableUserAdministration(String conversationid){
+        /*
         GroupAdministrationPresenter groupAdministrationPresenter = this;
         AsyncCallback<GroupConversation> callback = new AsyncCallback<GroupConversation>() {
             public void onFailure(Throwable caught) {
@@ -139,7 +141,44 @@ public class GroupAdministrationPresenter {
         GroupConversationServiceAsync conversationServiceAsync = GWT.create(GroupConversationService.class);
 
         conversationServiceAsync.getGroupConversation(conversationid,
-                0,  callback);
+                0,  callback);*/
+    }
+
+    public void goToCreateGroup() {
+        CreateGroupsPresenter createGroupsPresenter = new CreateGroupsPresenter(
+                new CreateGroupsView(), loggerUser, this
+        );
+        createGroupsPresenter.go(view.getContentContainer());
+    }
+
+    public void enableUserAdministration(){
+        /*GroupAdministrationPresenter groupAdministrationPresenter = this;
+        UserAdministrationForGroupsPresenter group =
+                new UserAdministrationForGroupsPresenter(
+                        new UserAdministrationForGroupsView(),
+                        loggerUser , groupAdministrationPresenter,
+                        groupConversation);
+        group.go(view.getAddUserContainer());
+        AsyncCallback<GroupConversation> callback = new AsyncCallback<GroupConversation>() {
+            public void onFailure(Throwable caught) {
+                // TODO: Do something with errors.
+            }
+
+            public void onSuccess(GroupConversation groupConversation) {
+
+                UserAdministrationForGroupsPresenter group =
+                        new UserAdministrationForGroupsPresenter(
+                                new UserAdministrationForGroupsView(),
+                                loggerUser , groupAdministrationPresenter,
+                                groupConversation);
+                group.go(view.getAddUserContainer());
+            }
+        };
+
+        GroupConversationServiceAsync conversationServiceAsync = GWT.create(GroupConversationService.class);
+
+        conversationServiceAsync.getGroupConversation(conversationid,
+                0,  callback);*/
     }
 }
 

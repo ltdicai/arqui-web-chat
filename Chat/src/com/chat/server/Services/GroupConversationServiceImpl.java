@@ -79,4 +79,15 @@ public class GroupConversationServiceImpl extends RemoteServiceServlet implement
         }
     }
 
+    @Override
+    public void createGroupConversationWith(User hostUser, String name, List<User> members) {
+        try {
+            Conversation conv = db.insert(name, hostUser, members);
+            IntegrationService.sendNewRoom(conv);
+        } catch (Exception exc) {
+            System.out.println("ERROR: " + exc.toString() + "---" + exc.getMessage());
+        }
+
+    }
+
 }

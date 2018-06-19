@@ -91,8 +91,6 @@ create table gwtdbschema.groupconversations
 create table gwtdbschema.groups
 (
   conversationid varchar(50) not null
-    constraint groups_pkey
-    primary key
     constraint groups_conversations__fk
     references gwtdbschema.conversations,
   userid         varchar(50) not null

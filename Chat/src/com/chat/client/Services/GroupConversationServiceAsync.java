@@ -15,4 +15,5 @@ public interface GroupConversationServiceAsync {
     void createGroupConversation(User hostUser, String name, AsyncCallback<Void> async);
     void addUser(Conversation conversation, User user, AsyncCallback<Void> async);
     void getUserPosibleAdd(Conversation conversation, AsyncCallback<List<User>> async);
+    void createGroupConversationWith(User hostUser, String name, List<User> members, AsyncCallback<Void> async);
 }

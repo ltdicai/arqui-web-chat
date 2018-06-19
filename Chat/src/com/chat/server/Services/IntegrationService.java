@@ -219,9 +219,11 @@ public class IntegrationService {
                 for (String userId : userIds) {
                     users.add(new User(userId));
                 }
+                // Extraer uno cualquier para hacer de host
+                User userHost = users.get(0);
+                users = users.subList(1, users.size());
                 try {
-                    //groupDB.insert();
-                    //db.insert(hostUser, inviteUser, roomId);
+                    groupDB.insert(roomId, userHost, users);
                 } catch (Exception exc) {
                     logger.severe(exc.toString() + "---" + exc.getMessage());
                 }

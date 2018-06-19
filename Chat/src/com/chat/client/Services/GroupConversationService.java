@@ -18,5 +18,6 @@ public interface GroupConversationService extends RemoteService {
     void createGroupConversation(User hostUser, String name);
     void addUser(Conversation conversation, User user);
     List<User> getUserPosibleAdd(Conversation conversation);
+    void createGroupConversationWith(User hostUser, String name, List<User> members);
 
 }
